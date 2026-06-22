@@ -15,9 +15,22 @@ public class MediaController {
     private final MediaService mediaService;
 
     @PostMapping("/upload")
-    public ResponseEntity<MediaResponse> upload(@RequestParam("file") MultipartFile file, @RequestParam("userId") Long userId) throws Exception {
+    public ResponseEntity<MediaResponse> upload(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userId") Long userId) throws Exception {
+        return ResponseEntity.ok(mediaService.upload(file, userId));
+    }
 
-        return ResponseEntity.ok(
-                mediaService.upload(file, userId));
+    @PutMapping("/update/{mediaId}")
+    public ResponseEntity<MediaResponse> update(
+            @PathVariable Long mediaId,
+            @RequestParam("file") MultipartFile newFile) throws Exception {
+        return ResponseEntity.ok(mediaService.update(mediaId, newFile));
+    }
+
+    @DeleteMapping("/delete/{mediaId}")
+    public ResponseEntity<Void> delete(@PathVariable Long mediaId) throws Exception {
+        mediaService.delete(mediaId);
+        return ResponseEntity.noContent().build();
     }
 }

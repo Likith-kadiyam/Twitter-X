@@ -2,7 +2,7 @@ package com.twitter.social.service.service.impl;
 
 import com.twitter.social.service.Enum.NotificationType;
 import com.twitter.social.service.Model.Like;
-import com.twitter.social.service.client.TweetClient;
+import com.twitter.social.service.client.TweetServiceClient;
 import com.twitter.social.service.dto.LikeRequestDto;
 import com.twitter.social.service.dto.NotificationEventDto;
 import com.twitter.social.service.events.TweetInteractionProducer;
@@ -24,7 +24,7 @@ public class LikeServiceImpl implements LikeService {
 
     private final NotificationProducer notificationProducer;
 
-    private final TweetClient tweetClient;
+    private final TweetServiceClient tweetServiceClient;
     private final TweetInteractionProducer tweetInteractionProducer;
 
     @Override
@@ -33,7 +33,7 @@ public class LikeServiceImpl implements LikeService {
         if (likeRepository.existsByUserIdAndTweetId(request.getUserId(), request.getTweetId())) {
             throw new SocialException("Tweet already liked");
         }
-        TweetResponse tweet = tweetClient.getTweet(request.getTweetId());
+        TweetResponse tweet = tweetServiceClient.getTweet(request.getTweetId());
 
 
         Like like = Like.builder()

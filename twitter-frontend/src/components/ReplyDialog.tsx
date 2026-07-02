@@ -66,6 +66,7 @@ const ReplyDialog: React.FC<ReplyDialogProps> = ({ tweet, isOpen, onClose }) => 
       queryClient.invalidateQueries({ queryKey: ['replies', tweet.tweetId] });
       queryClient.invalidateQueries({ queryKey: ['tweet-detail', tweet.tweetId] });
       queryClient.invalidateQueries({ queryKey: ['user-replies', user?.userId] });
+      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
       toast.success('Your reply was sent!');
       onClose();
     },

@@ -218,7 +218,13 @@ const Profile: React.FC = () => {
 
   // Upload Avatar
   const uploadAvatarMutation = useMutation({
-    mutationFn: (file: File) => socialService.uploadAvatar(userId, file),
+    mutationFn: (file: File) => {
+      if (profile?.avatarUrl) {
+        return socialService.updateAvatar(userId, file);
+      } else {
+        return socialService.uploadAvatar(userId, file);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-profile', userId] });
       toast.success('Avatar updated successfully');
@@ -230,7 +236,13 @@ const Profile: React.FC = () => {
 
   // Upload Banner
   const uploadBannerMutation = useMutation({
-    mutationFn: (file: File) => socialService.uploadBanner(userId, file),
+    mutationFn: (file: File) => {
+      if (profile?.bannerUrl) {
+        return socialService.updateBanner(userId, file);
+      } else {
+        return socialService.uploadBanner(userId, file);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-profile', userId] });
       toast.success('Banner updated successfully');

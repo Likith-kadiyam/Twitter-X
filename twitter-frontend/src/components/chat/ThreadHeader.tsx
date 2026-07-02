@@ -4,8 +4,12 @@ import { ArrowLeft, MoreVertical } from 'lucide-react';
 import { useChat } from '../../context/ChatContext';
 import { useAuthStore } from '../../store/authStore';
 import { getUserDisplay, useUserDisplay } from '../../hooks/userDisplay';
+<<<<<<< HEAD
 import { formatLastSeen } from '../../hooks/formatTime';
 
+=======
+import { formatClockTime, formatDayDivider } from '../../hooks/formatTime';
+>>>>>>> main
 import Avatar from './Avatar';
 import GroupDetailsModal from './GroupDetailsModal';
 import './ThreadHeader.css';
@@ -43,7 +47,11 @@ const ThreadHeader: React.FC<ThreadHeaderProps> = ({ conversation, onBack }) => 
       if (status.online) {
         subtitle = 'Online';
       } else {
+<<<<<<< HEAD
         subtitle = formatLastSeen(status.lastSeen);
+=======
+        subtitle = `Last seen ${formatClockTime(status.lastSeen)}`;
+>>>>>>> main
       }
     } else {
       subtitle = `@${otherDisplay.username}`;

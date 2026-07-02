@@ -42,7 +42,6 @@ public class ConversationService {
     @Transactional
     public ConversationResponse createConversation(Long requesterId, CreateConversationRequest request) {
 
-        // de-dupe + ensure requester isn't accidentally listed twice
         Set<Long> otherParticipantIds = new LinkedHashSet<>(request.getParticipantIds());
         otherParticipantIds.remove(requesterId);
 
@@ -58,7 +57,6 @@ public class ConversationService {
             return findOrCreateDirectConversation(requesterId, otherUserId);
         }
 
-        // GROUP
         if (otherParticipantIds.size() < 2) {
             throw new InvalidConversationRequestException("GROUP conversations need at least 2 other participants");
         }
@@ -126,10 +124,7 @@ public class ConversationService {
                 .orElseThrow(() -> new ConversationNotFoundException(conversationId));
     }
 
-    /**
-     * Verifies the user is an active participant. Used both by REST endpoints
-     * and by the STOMP message handler before allowing a send/subscribe.
-     */
+
     @Transactional(readOnly = true)
     public void assertParticipant(Long conversationId, Long userId) {
         boolean active = participantRepository.existsByConversationIdAndUserIdAndLeftAtIsNull(conversationId, userId);
@@ -225,7 +220,10 @@ public class ConversationService {
         conversation = conversationRepository.save(conversation);
         ConversationResponse response = toResponse(conversation, requesterId);
 
+<<<<<<< HEAD
         // Broadcast to WS topic
+=======
+>>>>>>> main
         WsEvent event = WsEvent.builder()
                 .type(WsEventType.GROUP_UPDATE)
                 .conversationId(conversationId)
@@ -251,7 +249,11 @@ public class ConversationService {
         if (existing.isPresent()) {
             ConversationParticipant p = existing.get();
             if (p.isActive()) {
+<<<<<<< HEAD
                 // Already in group
+=======
+
+>>>>>>> main
                 return;
             } else {
                 p.setLeftAt(null);
@@ -264,7 +266,10 @@ public class ConversationService {
 
         ConversationResponse response = toResponse(conversation, requesterId);
 
+<<<<<<< HEAD
         // Broadcast USER_JOINED and GROUP_UPDATE
+=======
+>>>>>>> main
         WsEvent joinedEvent = WsEvent.builder()
                 .type(WsEventType.USER_JOINED)
                 .conversationId(conversationId)
@@ -337,7 +342,10 @@ public class ConversationService {
 
         ConversationResponse response = toResponse(conversation, userId);
 
+<<<<<<< HEAD
         // Broadcast USER_LEFT and GROUP_UPDATE
+=======
+>>>>>>> main
         WsEvent leftEvent = WsEvent.builder()
                 .type(WsEventType.USER_LEFT)
                 .conversationId(conversationId)

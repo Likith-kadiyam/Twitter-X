@@ -91,6 +91,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['like-status', currentUserId, tweet.tweetId] });
       queryClient.invalidateQueries({ queryKey: ['tweet-detail', tweet.tweetId] });
+      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
     }
   });
 
@@ -142,6 +143,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['retweet-status', currentUserId, tweet.tweetId] });
       queryClient.invalidateQueries({ queryKey: ['tweet-detail', tweet.tweetId] });
+      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
     },
     onSuccess: () => {
       toast.success(isRetweeted ? 'Retweet removed' : 'Retweeted successfully');
@@ -206,6 +208,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
       queryClient.invalidateQueries({ queryKey: ['tweets'] });
       queryClient.invalidateQueries({ queryKey: ['feed-tweets'] });
       queryClient.invalidateQueries({ queryKey: ['user-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
       toast.success('Post deleted successfully');
     },
     onError: () => {
@@ -222,6 +225,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
       queryClient.invalidateQueries({ queryKey: ['feed-tweets'] });
       queryClient.invalidateQueries({ queryKey: ['tweet-detail', tweet.tweetId] });
       queryClient.invalidateQueries({ queryKey: ['user-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
       toast.success('Post updated');
     },
     onError: () => {

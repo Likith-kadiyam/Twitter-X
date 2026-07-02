@@ -1,0 +1,20 @@
+
+
+spring:
+  cloud:
+    gateway:
+      routes:
+
+        - id: chat-service-rest
+          uri: lb://chat-service
+          predicates:
+            - Path=/chat-service/api/**
+          filters:
+            - StripPrefix=1
+
+        - id: chat-service-ws
+          uri: lb:ws://chat-service
+          predicates:
+            - Path=/chat-service/ws/**
+          filters:
+            - StripPrefix=1

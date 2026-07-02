@@ -96,10 +96,10 @@ const RightSidebar: React.FC = () => {
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Fetch trending hashtags dynamically from database
-  const { data: trendingHashtags } = useQuery({
-    queryKey: ['trending-hashtags'],
-    queryFn: () => tweetService.getTrendingHashtags(),
+  // Fetch trending tweets using the trending algorithm
+  const { data: trendingTweets } = useQuery({
+    queryKey: ['trending-tweets'],
+    queryFn: () => tweetService.getTrendingTweets('24h'),
   });
 
   // Debounce logic for suggestions
@@ -144,14 +144,49 @@ const RightSidebar: React.FC = () => {
     }
   };
 
-  // Map trending hashtags response to trends list
+  // Extract trending hashtags from trending tweets
+  const allTrends = React.useMemo(() => {
+    if (!trendingTweets) return [];
+    
+    const hashtagMap = new Map<string, number>();
+    const orderList: string[] = [];
+
+    trendingTweets.forEach(tweet => {
+      const tags = new Set<string>();
+      if (tweet.hashtags && Array.isArray(tweet.hashtags)) {
+        tweet.hashtags.forEach((tag: string) => {
+          if (tag) {
+            const clean = tag.startsWith('#') ? tag : `#${tag}`;
+            tags.add(clean);
+          }
+        });
+      }
+      if (tweet.content) {
+        const contentTags = tweet.content.match(/#\w+/g);
+        if (contentTags) {
+          contentTags.forEach((tag: string) => {
+            tags.add(tag);
+          });
+        }
+      }
+      tags.forEach(tag => {
+        if (!hashtagMap.has(tag)) {
+          hashtagMap.set(tag, 0);
+          orderList.push(tag);
+        }
+        hashtagMap.set(tag, hashtagMap.get(tag)! + 1);
+      });
+    });
+
+    return orderList.map(tag => ({
+      hashtag: tag,
+      posts: hashtagMap.get(tag) || 1
+    }));
+  }, [trendingTweets]);
+
   const trends = React.useMemo(() => {
-    if (!trendingHashtags) return [];
-    return trendingHashtags.map(h => ({
-      hashtag: h.hashtag.startsWith('#') ? h.hashtag : `#${h.hashtag}`,
-      posts: h.posts
-    })).slice(0, 4);
-  }, [trendingHashtags]);
+    return allTrends.slice(0, 4);
+  }, [allTrends]);
 
   // Fetch dynamic follow suggestions using registered users only
   const { data: suggestionsResponse } = useQuery({
@@ -256,7 +291,7 @@ const RightSidebar: React.FC = () => {
             </div>
           ))}
         </div>
-        {trendingHashtags && trendingHashtags.length > 4 && (
+        {allTrends && allTrends.length > 4 && (
           <button
             onClick={() => navigate('/search')}
             className="text-twitter-blue hover:text-twitter-blue-hover text-sm font-semibold mt-1 text-left hover:underline w-full"

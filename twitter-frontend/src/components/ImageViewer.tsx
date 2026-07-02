@@ -32,7 +32,17 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ urls, initialIndex, onClose }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
+<<<<<<< HEAD
     return () => window.removeEventListener('keydown', handleKeyDown);
+=======
+    // Disable body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+>>>>>>> main
   }, [currentIndex, urls]);
 
   const handlePrev = () => {
@@ -45,17 +55,32 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ urls, initialIndex, onClose }
     setCurrentIndex((prev) => (prev === urls.length - 1 ? 0 : prev + 1));
   };
 
+<<<<<<< HEAD
   const toggleZoom = () => {
     setIsZoomed((prev) => !prev);
+=======
+  const toggleZoom = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsZoomed(!isZoomed);
+>>>>>>> main
   };
 
   return (
     <div 
+<<<<<<< HEAD
       className="fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center select-none"
       onClick={onClose}
     >
       {/* Top Toolbar */}
       <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between z-[110] bg-gradient-to-b from-black/60 to-transparent pointer-events-none">
+=======
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 select-none backdrop-blur-sm transition-all duration-300"
+      onClick={onClose}
+    >
+      {/* Top Bar Controls */}
+      <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-[110] pointer-events-none">
+        {/* Close Button */}
+>>>>>>> main
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -134,6 +159,10 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ urls, initialIndex, onClose }
         )}
       </div>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
       {/* Next Arrow */}
       {urls.length > 1 && (
         <button

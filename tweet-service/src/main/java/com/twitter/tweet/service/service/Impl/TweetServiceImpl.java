@@ -162,9 +162,9 @@ public class TweetServiceImpl implements TweetService {
                 .tweetId(updatedTweet.getTweetId())
                 .content(updatedTweet.getContent())
                 .hashtags(updatedTweet.getTweetHashtags()
-                                .stream()
-                                .map(th -> th.getHashtag().getName())
-                                .toList()
+                        .stream()
+                        .map(th -> th.getHashtag().getName())
+                        .toList()
                 )
                 .build();
 

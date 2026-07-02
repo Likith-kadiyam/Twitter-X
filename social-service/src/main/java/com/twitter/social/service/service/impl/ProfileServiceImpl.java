@@ -27,6 +27,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Comparator;
@@ -97,8 +99,7 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profile = getOrCreateProfile(userId);
 
         if (profile.getAvatarMediaId() != null) {
-            throw new SocialException(
-                    "Avatar already exists. Use PUT /{userId}/avatar to replace it.");
+            return updateAvatar(userId, file);
         }
 
         MediaResponse mediaResponse = mediaServiceClient.upload(file, userId);
@@ -121,12 +122,43 @@ public class ProfileServiceImpl implements ProfileService {
             return uploadAvatar(userId, file);
         }
 
-        MediaResponse mediaResponse = mediaServiceClient.update(profile.getAvatarMediaId(), file);
+        final Long oldMediaId = profile.getAvatarMediaId();
+
+        // 1. Upload new media successfully
+        MediaResponse mediaResponse = mediaServiceClient.upload(file, userId);
+
+        // 2. Update database with new media URL/object key
         profile.setAvatarUrl(mediaResponse.getUrl());
         profile.setAvatarMediaId(mediaResponse.getMediaId());
 
-        Profile saved = profileRepository.save(profile);
-        log.info("Avatar updated for userId={}, mediaId={}", userId, mediaResponse.getMediaId());
+        // 3. Verify update completed successfully
+        Profile saved = profileRepository.saveAndFlush(profile);
+
+        // 4. Delete the old media object from MinIO after transaction commit
+        if (oldMediaId != null) {
+            if (TransactionSynchronizationManager.isSynchronizationActive()) {
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        try {
+                            mediaServiceClient.delete(oldMediaId);
+                            log.info("Deleted old avatar media: {}", oldMediaId);
+                        } catch (Exception e) {
+                            log.error("Failed to delete old avatar media: " + oldMediaId, e);
+                        }
+                    }
+                });
+            } else {
+                try {
+                    mediaServiceClient.delete(oldMediaId);
+                    log.info("Deleted old avatar media: {}", oldMediaId);
+                } catch (Exception e) {
+                    log.error("Failed to delete old avatar media: " + oldMediaId, e);
+                }
+            }
+        }
+
+        log.info("Avatar updated for userId={}, newMediaId={}", userId, mediaResponse.getMediaId());
         return buildProfileResponse(saved, userId);
     }
 
@@ -139,10 +171,32 @@ public class ProfileServiceImpl implements ProfileService {
             throw new ProfileNotFoundException("No avatar found for userId: " + userId);
         }
 
-        mediaServiceClient.delete(profile.getAvatarMediaId());
+        final Long oldMediaId = profile.getAvatarMediaId();
         profile.setAvatarUrl(null);
         profile.setAvatarMediaId(null);
-        profileRepository.save(profile);
+        profileRepository.saveAndFlush(profile);
+
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    try {
+                        mediaServiceClient.delete(oldMediaId);
+                        log.info("Deleted avatar media: {}", oldMediaId);
+                    } catch (Exception e) {
+                        log.error("Failed to delete avatar media: " + oldMediaId, e);
+                    }
+                }
+            });
+        } else {
+            try {
+                mediaServiceClient.delete(oldMediaId);
+                log.info("Deleted avatar media: {}", oldMediaId);
+            } catch (Exception e) {
+                log.error("Failed to delete avatar media: " + oldMediaId, e);
+            }
+        }
+
         log.info("Avatar deleted for userId={}", userId);
     }
 
@@ -154,8 +208,7 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profile = getOrCreateProfile(userId);
 
         if (profile.getBannerMediaId() != null) {
-            throw new SocialException(
-                    "Banner already exists. Use PUT /{userId}/banner to replace it.");
+            return updateBanner(userId, file);
         }
 
         MediaResponse mediaResponse = mediaServiceClient.upload(file, userId);
@@ -177,12 +230,43 @@ public class ProfileServiceImpl implements ProfileService {
             return uploadBanner(userId, file);
         }
 
-        MediaResponse mediaResponse = mediaServiceClient.update(profile.getBannerMediaId(), file);
+        final Long oldMediaId = profile.getBannerMediaId();
+
+        // 1. Upload new media successfully
+        MediaResponse mediaResponse = mediaServiceClient.upload(file, userId);
+
+        // 2. Update database with new media URL/object key
         profile.setBannerUrl(mediaResponse.getUrl());
         profile.setBannerMediaId(mediaResponse.getMediaId());
 
-        Profile saved = profileRepository.save(profile);
-        log.info("Banner updated for userId={}, mediaId={}", userId, mediaResponse.getMediaId());
+        // 3. Verify update completed successfully
+        Profile saved = profileRepository.saveAndFlush(profile);
+
+        // 4. Delete the old media object from MinIO after transaction commit
+        if (oldMediaId != null) {
+            if (TransactionSynchronizationManager.isSynchronizationActive()) {
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        try {
+                            mediaServiceClient.delete(oldMediaId);
+                            log.info("Deleted old banner media: {}", oldMediaId);
+                        } catch (Exception e) {
+                            log.error("Failed to delete old banner media: " + oldMediaId, e);
+                        }
+                    }
+                });
+            } else {
+                try {
+                    mediaServiceClient.delete(oldMediaId);
+                    log.info("Deleted old banner media: {}", oldMediaId);
+                } catch (Exception e) {
+                    log.error("Failed to delete old banner media: " + oldMediaId, e);
+                }
+            }
+        }
+
+        log.info("Banner updated for userId={}, newMediaId={}", userId, mediaResponse.getMediaId());
         return buildProfileResponse(saved, userId);
     }
 
@@ -195,10 +279,32 @@ public class ProfileServiceImpl implements ProfileService {
             throw new ProfileNotFoundException("No banner found for userId: " + userId);
         }
 
-        mediaServiceClient.delete(profile.getBannerMediaId());
+        final Long oldMediaId = profile.getBannerMediaId();
         profile.setBannerUrl(null);
         profile.setBannerMediaId(null);
-        profileRepository.save(profile);
+        profileRepository.saveAndFlush(profile);
+
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    try {
+                        mediaServiceClient.delete(oldMediaId);
+                        log.info("Deleted banner media: {}", oldMediaId);
+                    } catch (Exception e) {
+                        log.error("Failed to delete banner media: " + oldMediaId, e);
+                    }
+                }
+            });
+        } else {
+            try {
+                mediaServiceClient.delete(oldMediaId);
+                log.info("Deleted banner media: {}", oldMediaId);
+            } catch (Exception e) {
+                log.error("Failed to delete banner media: " + oldMediaId, e);
+            }
+        }
+
         log.info("Banner deleted for userId={}", userId);
     }
 
@@ -369,7 +475,7 @@ public class ProfileServiceImpl implements ProfileService {
         if (contentType == null || !contentType.startsWith("image/")) {
             throw new IllegalArgumentException("Only image files are allowed");
         }
-        long maxSizeBytes = 5L * 1024 * 1024; // 5MB - adjust to your needs
+        long maxSizeBytes = 5L * 1024 * 1024;
         if (file.getSize() > maxSizeBytes) {
             throw new IllegalArgumentException("File size must not exceed 5MB");
         }

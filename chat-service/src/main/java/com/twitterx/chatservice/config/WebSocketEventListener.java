@@ -7,10 +7,14 @@ import com.twitterx.chatservice.repository.UserStatusRepository;
 import com.twitterx.chatservice.service.ConversationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+<<<<<<< HEAD
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.core.StringRedisTemplate;
+=======
+import org.springframework.context.event.EventListener;
+>>>>>>> main
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
@@ -29,6 +33,7 @@ public class WebSocketEventListener {
     private final UserStatusRepository userStatusRepository;
     private final ConversationService conversationService;
     private final SimpMessagingTemplate messagingTemplate;
+<<<<<<< HEAD
     private final StringRedisTemplate redisTemplate;
 
     @Value("${server.port:8086}")
@@ -82,6 +87,8 @@ public class WebSocketEventListener {
             log.error("Failed to clean up stale sessions on startup", e);
         }
     }
+=======
+>>>>>>> main
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -89,6 +96,7 @@ public class WebSocketEventListener {
         Principal principal = headerAccessor.getUser();
         if (principal != null) {
             Long userId = Long.valueOf(principal.getName());
+<<<<<<< HEAD
             String sessionId = headerAccessor.getSessionId();
             log.info("User connected: {}, sessionId: {}", userId, sessionId);
 
@@ -117,6 +125,18 @@ public class WebSocketEventListener {
                     broadcastStatusChange(userId, true, status.getLastSeen());
                 }
             }
+=======
+            log.info("User connected: {}", userId);
+
+            UserStatus status = UserStatus.builder()
+                    .userId(userId)
+                    .online(true)
+                    .lastSeen(LocalDateTime.now())
+                    .build();
+            userStatusRepository.save(status);
+
+            broadcastStatusChange(userId, true);
+>>>>>>> main
         }
     }
 
@@ -126,6 +146,7 @@ public class WebSocketEventListener {
         Principal principal = headerAccessor.getUser();
         if (principal != null) {
             Long userId = Long.valueOf(principal.getName());
+<<<<<<< HEAD
             String sessionId = headerAccessor.getSessionId();
             log.info("User disconnected: {}, sessionId: {}", userId, sessionId);
 
@@ -156,6 +177,22 @@ public class WebSocketEventListener {
     }
 
     private void broadcastStatusChange(Long userId, boolean online, LocalDateTime lastSeen) {
+=======
+            log.info("User disconnected: {}", userId);
+
+            UserStatus status = UserStatus.builder()
+                    .userId(userId)
+                    .online(false)
+                    .lastSeen(LocalDateTime.now())
+                    .build();
+            userStatusRepository.save(status);
+
+            broadcastStatusChange(userId, false);
+        }
+    }
+
+    private void broadcastStatusChange(Long userId, boolean online) {
+>>>>>>> main
         try {
             List<Long> activeConversations = conversationService.listConversationsForUser(userId).stream()
                     .map(c -> c.getId())
@@ -165,7 +202,11 @@ public class WebSocketEventListener {
                     .type(WsEventType.USER_STATUS)
                     .userId(userId)
                     .online(online)
+<<<<<<< HEAD
                     .lastSeen(lastSeen)
+=======
+                    .lastSeen(LocalDateTime.now())
+>>>>>>> main
                     .timestamp(LocalDateTime.now())
                     .build();
 

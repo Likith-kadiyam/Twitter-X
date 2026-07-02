@@ -7,3 +7,5 @@ CREATE DATABASE "notification-service";
 
 
 
+
+

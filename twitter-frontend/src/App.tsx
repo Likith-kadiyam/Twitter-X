@@ -228,6 +228,10 @@ function App() {
         </BrowserRouter>
       </ChatProvider>
 
+<<<<<<< HEAD
+=======
+      
+>>>>>>> main
       {/* Toast Notifications */}
       <Toaster 
         position="bottom-center"

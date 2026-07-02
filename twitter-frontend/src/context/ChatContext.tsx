@@ -1,68 +1,66 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { chatService } from '../services/api';
+import { chatApi, ChatMessageResponse, ConversationResponse } from '../services/chatApi';
 import { createChatSocket, STOMP_DESTINATIONS, conversationTopic } from '../services/chatSocket';
 import { useAuthStore } from '../store/authStore';
 
-export interface Message {
-  id: number;
-  conversationId: number;
-  senderId: number;
-  content: string;
-  messageType: 'TEXT' | 'IMAGE' | 'VIDEO';
-  status: string;
-  createdAt: string;
-}
-
-export interface Conversation {
-  id: number;
-  type: 'ONE_TO_ONE' | 'GROUP';
-  name?: string | null;
-  participantIds: number[];
-  lastMessage?: Message | null;
-  unreadCount: number;
-  updatedAt: string;
+interface UserStatus {
+  userId: number;
+  online: boolean;
+  lastSeen: string;
 }
 
 interface ChatContextType {
   connectionState: string;
   connectionError: string | null;
-  conversations: Conversation[];
+  conversations: ConversationResponse[];
   conversationsLoading: boolean;
   activeConversationId: number | null;
-  messages: Message[];
+  messages: ChatMessageResponse[];
   messagesLoading: boolean;
   hasMoreMessages: boolean;
   typingUserIds: number[];
-  openConversation: (conversationId: number) => Promise<void>;
-  loadOlderMessages: (conversationId: number) => Promise<void>;
-  sendMessage: (conversationId: number, content: string, messageType?: string) => boolean;
-  sendTyping: (conversationId: number) => void;
-  sendMarkRead: (conversationId: number, lastReadMessageId: number) => void;
-  startOneToOne: (otherUserId: number) => Promise<Conversation>;
-  startGroup: (participantIds: number[], groupName: string) => Promise<Conversation>;
+  onlineStatuses: Record<number, UserStatus>;
+  openConversation: (id: number) => Promise<void>;
+  loadOlderMessages: (id: number) => Promise<void>;
+  sendMessage: (id: number, content: string, messageType?: 'TEXT' | 'IMAGE' | 'VIDEO' | 'SYSTEM') => boolean;
+  sendTyping: (id: number) => void;
+  sendMarkRead: (id: number, lastReadMessageId: number) => void;
+  startOneToOne: (otherUserId: number) => Promise<ConversationResponse>;
+  startGroup: (participantIds: number[], groupName: string) => Promise<ConversationResponse>;
   refreshConversations: () => Promise<void>;
+  editMessage: (messageId: number, content: string) => Promise<void>;
+  deleteForEveryone: (messageId: number) => Promise<void>;
+  deleteForMe: (messageId: number) => Promise<void>;
+  addReaction: (messageId: number, reaction: string) => Promise<void>;
+  removeReaction: (messageId: number, reaction: string) => Promise<void>;
+  fetchUserStatus: (userId: number) => Promise<void>;
+  updateGroupSettings: (id: number, name?: string, groupImageUrl?: string) => Promise<void>;
+  addParticipant: (id: number, userId: number) => Promise<void>;
+  removeParticipant: (id: number, userId: number) => Promise<void>;
+  leaveGroup: (id: number) => Promise<void>;
 }
 
 const ChatContext = createContext<ChatContextType | null>(null);
 
 const TYPING_TIMEOUT_MS = 3000;
 
-export function ChatProvider({ children }: { children: React.ReactNode }) {
+export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
-  const [connectionState, setConnectionState] = useState('disconnected'); // disconnected | connecting | connected | error
+  const [connectionState, setConnectionState] = useState('disconnected');
   const [connectionError, setConnectionError] = useState<string | null>(null);
 
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversations, setConversations] = useState<ConversationResponse[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(true);
 
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
-  const [messagesByConversation, setMessagesByConversation] = useState<Record<number, Message[]>>({});
+  const [messagesByConversation, setMessagesByConversation] = useState<Record<number, ChatMessageResponse[]>>({});
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [hasMoreByConversation, setHasMoreByConversation] = useState<Record<number, boolean>>({});
   const [pageByConversation, setPageByConversation] = useState<Record<number, number>>({});
 
   const [typingByConversation, setTypingByConversation] = useState<Record<number, Set<number>>>({});
+  const [onlineStatuses, setOnlineStatuses] = useState<Record<number, UserStatus>>({});
 
   const stompClientRef = useRef<any>(null);
   const subscriptionsRef = useRef<Map<number, any>>(new Map());
@@ -80,17 +78,17 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     activeConversationIdRef.current = activeConversationId;
   }, [activeConversationId]);
 
+  // Handle incoming STOMP frame payload
   const handleIncoming = useCallback((conversationId: number, payload: any) => {
-    const isTypingEvent = payload.type === 'TYPING' || payload.type === 'STOP_TYPING';
-    const isReadReceipt = payload.type === 'READ_RECEIPT';
+    const eventType = payload.type;
 
-    if (isTypingEvent) {
+    if (eventType === 'TYPING' || eventType === 'STOP_TYPING') {
       setTypingByConversation((prev) => {
         const next = { ...prev };
         const set = new Set<number>(next[conversationId] || []);
         const key = `${conversationId}:${payload.userId}`;
 
-        if (payload.type === 'TYPING') {
+        if (eventType === 'TYPING') {
           set.add(payload.userId);
           clearTimeout(remoteTypingTimersRef.current.get(key));
           const timer = setTimeout(() => {
@@ -114,15 +112,169 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (isReadReceipt) {
+    if (eventType === 'READ_RECEIPT') {
+      setConversations((prev) =>
+        prev.map((c) => {
+          if (c.id === conversationId) {
+            if (payload.userId === currentUserIdRef.current) {
+              return { ...c, unreadCount: 0 };
+            }
+          }
+          return c;
+        })
+      );
+
+      setMessagesByConversation((prev) => {
+        const list = prev[conversationId] || [];
+        const updatedList = list.map((m) => {
+          if (m.senderId !== payload.userId && m.id <= payload.lastReadMessageId) {
+            return { ...m, status: 'READ' as const };
+          }
+          return m;
+        });
+        return { ...prev, [conversationId]: updatedList };
+      });
       return;
     }
 
-    // Otherwise it's a persisted message
+    if (eventType === 'USER_STATUS') {
+      setOnlineStatuses((prev) => ({
+        ...prev,
+        [payload.userId]: {
+          userId: payload.userId,
+          online: payload.online,
+          lastSeen: payload.lastSeen,
+        },
+      }));
+      return;
+    }
+
+    if (eventType === 'MESSAGE_EDITED') {
+      setMessagesByConversation((prev) => {
+        const list = prev[conversationId] || [];
+        const updatedList = list.map((m) => {
+          if (m.id === payload.messageId) {
+            return {
+              ...m,
+              content: payload.content,
+              edited: true,
+              editedAt: payload.timestamp,
+            };
+          }
+          return m;
+        });
+        return { ...prev, [conversationId]: updatedList };
+      });
+
+      setConversations((prev) => {
+        return prev.map((c) => {
+          if (c.id === conversationId && c.lastMessage?.id === payload.messageId) {
+            return {
+              ...c,
+              lastMessage: {
+                ...c.lastMessage,
+                content: payload.content,
+                edited: true,
+              } as ChatMessageResponse,
+
+            };
+          }
+          return c;
+        });
+      });
+      return;
+    }
+
+    if (eventType === 'MESSAGE_DELETED') {
+      setMessagesByConversation((prev) => {
+        const list = prev[conversationId] || [];
+        const updatedList = list.map((m) => {
+          if (m.id === payload.messageId) {
+            return {
+              ...m,
+              content: 'This message was deleted',
+              deleted: true,
+            };
+          }
+          return m;
+        });
+        return { ...prev, [conversationId]: updatedList };
+      });
+
+      setConversations((prev) => {
+        return prev.map((c) => {
+          if (c.id === conversationId && c.lastMessage?.id === payload.messageId) {
+            return {
+              ...c,
+              lastMessage: {
+                ...c.lastMessage,
+                content: 'This message was deleted',
+                deleted: true,
+              } as ChatMessageResponse,
+
+            };
+          }
+          return c;
+        });
+      });
+      return;
+    }
+
+    if (eventType === 'REACTION_ADD') {
+      setMessagesByConversation((prev) => {
+        const list = prev[conversationId] || [];
+        const updatedList = list.map((m) => {
+          if (m.id === payload.messageId) {
+            const rx = m.reactions || [];
+            if (!rx.some((r) => r.userId === payload.userId && r.reaction === payload.reaction)) {
+              return {
+                ...m,
+                reactions: [...rx, { reaction: payload.reaction, userId: payload.userId }],
+              };
+            }
+          }
+          return m;
+        });
+        return { ...prev, [conversationId]: updatedList };
+      });
+      return;
+    }
+
+    if (eventType === 'REACTION_REMOVE') {
+      setMessagesByConversation((prev) => {
+        const list = prev[conversationId] || [];
+        const updatedList = list.map((m) => {
+          if (m.id === payload.messageId) {
+            const rx = m.reactions || [];
+            return {
+              ...m,
+              reactions: rx.filter((r) => !(r.userId === payload.userId && r.reaction === payload.reaction)),
+            };
+          }
+          return m;
+        });
+        return { ...prev, [conversationId]: updatedList };
+      });
+      return;
+    }
+
+    if (eventType === 'GROUP_UPDATE') {
+      setConversations((prev) => {
+        const exists = prev.some((c) => c.id === payload.conversation.id);
+        const updated = exists
+          ? prev.map((c) => (c.id === payload.conversation.id ? payload.conversation : c))
+          : [payload.conversation, ...prev];
+        return updated.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+      });
+      return;
+    }
+
+    // Otherwise it's a new persisted message
+    const msg = payload as ChatMessageResponse;
     setMessagesByConversation((prev) => {
       const existing = prev[conversationId] || [];
-      if (existing.some((m) => m.id === payload.id)) return prev; // de-dupe
-      return { ...prev, [conversationId]: [...existing, payload] };
+      if (existing.some((m) => m.id === msg.id)) return prev;
+      return { ...prev, [conversationId]: [...existing, msg] };
     });
 
     setConversations((prev) => {
@@ -130,10 +282,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         c.id === conversationId
           ? {
               ...c,
-              lastMessage: payload,
-              updatedAt: payload.createdAt,
+              lastMessage: msg,
+              updatedAt: msg.createdAt,
               unreadCount:
-                payload.senderId === currentUserIdRef.current ||
+                msg.senderId === currentUserIdRef.current ||
                 conversationId === activeConversationIdRef.current
                   ? c.unreadCount
                   : (c.unreadCount || 0) + 1,
@@ -144,6 +296,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  // Subscribe to STOMP destination
   const subscribeToConversation = useCallback(
     (conversationId: number) => {
       const client = stompClientRef.current;
@@ -162,8 +315,22 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const refreshConversations = useCallback(async () => {
     setConversationsLoading(true);
     try {
-      const data = await chatService.listConversations();
+      const data = await chatApi.listConversations();
       setConversations(data || []);
+      
+      // Fetch status for all direct chat partners
+      data.forEach((c) => {
+        if (c.type === 'ONE_TO_ONE' && currentUserIdRef.current) {
+          const otherId = c.participantIds.find((id) => id !== currentUserIdRef.current);
+          if (otherId) {
+            chatApi.getUserStatus(otherId)
+              .then((status) => {
+                setOnlineStatuses((prev) => ({ ...prev, [otherId]: status }));
+              })
+              .catch(() => {});
+          }
+        }
+      });
     } finally {
       setConversationsLoading(false);
     }
@@ -173,6 +340,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     if (isAuthenticated) refreshConversations();
   }, [isAuthenticated, refreshConversations]);
 
+  // STOMP connection lifecycle
   useEffect(() => {
     if (!isAuthenticated) return undefined;
 
@@ -208,6 +376,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     };
   }, [isAuthenticated]);
 
+  // Subscribe to all conversations
   useEffect(() => {
     if (connectionState !== 'connected') return;
     conversations.forEach((c) => subscribeToConversation(c.id));
@@ -222,7 +391,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       if (!alreadyLoaded) {
         setMessagesLoading(true);
         try {
-          const page = await chatService.getMessages(conversationId, 0, 30);
+          const page = await chatApi.getMessages(conversationId, 0, 30);
           const ordered = [...(page.content || [])].reverse();
           setMessagesByConversation((prev) => ({ ...prev, [conversationId]: ordered }));
           setHasMoreByConversation((prev) => ({ ...prev, [conversationId]: !page.last }));
@@ -235,6 +404,22 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       setConversations((prev) =>
         prev.map((c) => (c.id === conversationId ? { ...c, unreadCount: 0 } : c))
       );
+
+      // Trigger read receipt
+      const localMsgs = messagesByConversation[conversationId] || [];
+      if (localMsgs.length > 0) {
+        const lastMsg = localMsgs[localMsgs.length - 1];
+        if (lastMsg.senderId !== currentUserIdRef.current) {
+          const client = stompClientRef.current;
+          if (client?.connected) {
+            client.publish({
+              destination: STOMP_DESTINATIONS.markRead,
+              body: JSON.stringify({ conversationId, lastReadMessageId: lastMsg.id }),
+            });
+          }
+          chatApi.markRead(conversationId, lastMsg.id).catch(() => {});
+        }
+      }
     },
     [messagesByConversation, subscribeToConversation]
   );
@@ -242,7 +427,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const loadOlderMessages = useCallback(
     async (conversationId: number) => {
       const nextPage = (pageByConversation[conversationId] || 0) + 1;
-      const page = await chatService.getMessages(conversationId, nextPage, 30);
+      const page = await chatApi.getMessages(conversationId, nextPage, 30);
       const ordered = [...(page.content || [])].reverse();
       setMessagesByConversation((prev) => ({
         ...prev,
@@ -254,7 +439,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     [pageByConversation]
   );
 
-  const sendMessage = useCallback((conversationId: number, content: string, messageType = 'TEXT') => {
+  const sendMessage = useCallback((conversationId: number, content: string, messageType: 'TEXT' | 'IMAGE' | 'VIDEO' | 'SYSTEM' = 'TEXT') => {
     const client = stompClientRef.current;
     if (!client || !client.connected) return false;
     client.publish({
@@ -290,12 +475,12 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ conversationId, lastReadMessageId }),
       });
     }
-    chatService.markRead(conversationId, lastReadMessageId).catch(() => {});
+    chatApi.markRead(conversationId, lastReadMessageId).catch(() => {});
   }, []);
 
   const startOneToOne = useCallback(
     async (otherUserId: number) => {
-      const conversation = await chatService.createOneToOne(otherUserId);
+      const conversation = await chatApi.createOneToOne(otherUserId);
       setConversations((prev) => {
         const exists = prev.some((c) => c.id === conversation.id);
         return exists ? prev : [conversation, ...prev];
@@ -308,7 +493,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
   const startGroup = useCallback(
     async (participantIds: number[], groupName: string) => {
-      const conversation = await chatService.createGroup(participantIds, groupName);
+      const conversation = await chatApi.createGroup(participantIds, groupName);
       setConversations((prev) => [conversation, ...prev]);
       subscribeToConversation(conversation.id);
       return conversation;
@@ -316,16 +501,73 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     [subscribeToConversation]
   );
 
+  const editMessage = useCallback(async (messageId: number, content: string) => {
+    await chatApi.editMessage(messageId, content);
+  }, []);
+
+  const deleteForEveryone = useCallback(async (messageId: number) => {
+    await chatApi.deleteForEveryone(messageId);
+  }, []);
+
+  const deleteForMe = useCallback(async (messageId: number) => {
+    await chatApi.deleteForMe(messageId);
+    if (activeConversationId) {
+      setMessagesByConversation((prev) => {
+        const list = prev[activeConversationId] || [];
+        return {
+          ...prev,
+          [activeConversationId]: list.filter((m) => m.id !== messageId),
+        };
+      });
+    }
+  }, [activeConversationId]);
+
+  const addReaction = useCallback(async (messageId: number, reaction: string) => {
+    await chatApi.addReaction(messageId, reaction);
+  }, []);
+
+  const removeReaction = useCallback(async (messageId: number, reaction: string) => {
+    await chatApi.removeReaction(messageId, reaction);
+  }, []);
+
+  const fetchUserStatus = useCallback(async (userId: number) => {
+    try {
+      const status = await chatApi.getUserStatus(userId);
+      setOnlineStatuses((prev) => ({ ...prev, [userId]: status }));
+    } catch {}
+  }, []);
+
+  const updateGroupSettings = useCallback(async (conversationId: number, name?: string, groupImageUrl?: string) => {
+    await chatApi.updateGroupSettings(conversationId, name, groupImageUrl);
+  }, []);
+
+  const addParticipant = useCallback(async (conversationId: number, participantId: number) => {
+    await chatApi.addParticipant(conversationId, participantId);
+  }, []);
+
+  const removeParticipant = useCallback(async (conversationId: number, participantId: number) => {
+    await chatApi.removeParticipant(conversationId, participantId);
+  }, []);
+
+  const leaveGroup = useCallback(async (conversationId: number) => {
+    await chatApi.leaveGroup(conversationId);
+    setConversations((prev) => prev.filter((c) => c.id !== conversationId));
+    if (activeConversationId === conversationId) {
+      setActiveConversationId(null);
+    }
+  }, [activeConversationId]);
+
   const value = {
     connectionState,
     connectionError,
     conversations,
     conversationsLoading,
     activeConversationId,
-    messages: activeConversationId ? (messagesByConversation[activeConversationId] || []) : [],
+    messages: activeConversationId ? messagesByConversation[activeConversationId] || [] : [],
     messagesLoading,
     hasMoreMessages: activeConversationId ? Boolean(hasMoreByConversation[activeConversationId]) : false,
     typingUserIds: activeConversationId ? Array.from(typingByConversation[activeConversationId] || []) : [],
+    onlineStatuses,
     openConversation,
     loadOlderMessages,
     sendMessage,
@@ -334,13 +576,23 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     startOneToOne,
     startGroup,
     refreshConversations,
+    editMessage,
+    deleteForEveryone,
+    deleteForMe,
+    addReaction,
+    removeReaction,
+    fetchUserStatus,
+    updateGroupSettings,
+    addParticipant,
+    removeParticipant,
+    leaveGroup,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
-}
+};
 
-export function useChat() {
+export const useChat = () => {
   const ctx = useContext(ChatContext);
   if (!ctx) throw new Error('useChat must be used within ChatProvider');
   return ctx;
-}
+};

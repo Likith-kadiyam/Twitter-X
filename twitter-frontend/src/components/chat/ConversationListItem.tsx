@@ -1,53 +1,48 @@
 import React from 'react';
 import Avatar from './Avatar';
-import { useUserDisplay } from '../../hooks/userDisplay';
+import { useUserDisplay, getUserDisplay } from '../../hooks/userDisplay';
 import { formatRelativeTime } from '../../hooks/formatTime';
 import { useAuthStore } from '../../store/authStore';
 import './ConversationListItem.css';
 
-interface Message {
-  id: number;
-  senderId: number;
-  content: string;
-  createdAt: string;
-}
-
-interface Conversation {
-  id: number;
-  type: 'ONE_TO_ONE' | 'GROUP';
-  name?: string | null;
-  participantIds: number[];
-  lastMessage?: Message | null;
-  unreadCount: number;
-  updatedAt: string;
-}
-
 interface ConversationListItemProps {
-  conversation: Conversation;
+  conversation: any;
   active: boolean;
   onClick: () => void;
 }
 
-export default function ConversationListItem({
+const ConversationListItem: React.FC<ConversationListItemProps> = ({
   conversation,
   active,
   onClick,
-}: ConversationListItemProps) {
-  const { user } = useAuthStore();
+}) => {
+  const { user: currentUser } = useAuthStore();
 
   const isGroup = conversation.type === 'GROUP';
   const otherParticipantIds = (conversation.participantIds || []).filter(
-    (id) => id !== user?.userId
+    (id: number) => id !== currentUser?.userId
   );
 
-  const primaryUser = isGroup ? null : useUserDisplay(otherParticipantIds[0]);
-  const title = isGroup ? conversation.name : primaryUser?.name;
+  const otherId = otherParticipantIds[0];
+  const otherUserDisplay = useUserDisplay(isGroup ? undefined : otherId);
+
+  const title = isGroup ? conversation.name : otherUserDisplay?.name;
 
   const last = conversation.lastMessage;
-  const lastSenderIsMe = last && last.senderId === user?.userId;
-  const preview = last
-    ? `${lastSenderIsMe ? 'You: ' : ''}${last.content}`
-    : 'Start the conversation';
+  const lastSenderIsMe = last && last.senderId === currentUser?.userId;
+  
+  let preview = 'Start the conversation';
+  if (last) {
+    if (last.deleted) {
+      preview = lastSenderIsMe ? 'You: (Message deleted)' : '(Message deleted)';
+    } else if (last.messageType === 'IMAGE') {
+      preview = lastSenderIsMe ? 'You sent an image' : 'Sent an image';
+    } else if (last.messageType === 'VIDEO') {
+      preview = lastSenderIsMe ? 'You sent a video' : 'Sent a video';
+    } else {
+      preview = `${lastSenderIsMe ? 'You: ' : ''}${last.content}`;
+    }
+  }
 
   const unread = conversation.unreadCount > 0;
 
@@ -58,24 +53,28 @@ export default function ConversationListItem({
     >
       <div className="conv-item__avatar">
         {isGroup ? (
-          <GroupAvatarStack participantIds={otherParticipantIds} />
+          conversation.groupImageUrl ? (
+            <Avatar user={{ name: conversation.name, avatarUrl: conversation.groupImageUrl, initial: 'G' }} size={48} />
+          ) : (
+            <GroupAvatarStack participantIds={otherParticipantIds} />
+          )
         ) : (
-          primaryUser && <Avatar user={primaryUser} size={48} />
+          <Avatar user={otherUserDisplay} size={48} />
         )}
       </div>
 
       <div className="conv-item__body">
         <div className="conv-item__top">
-          <span className={`conv-item__title${unread ? ' conv-item__title--unread' : ''}`}>
+          <span className={`conv-item__title font-bold text-white ${unread ? 'conv-item__title--unread' : ''}`}>
             {title}
           </span>
-          {!isGroup && primaryUser && (
-            <span className="conv-item__username">@{primaryUser.username}</span>
+          {!isGroup && otherUserDisplay && (
+            <span className="conv-item__username text-twitter-gray-1">@{otherUserDisplay.username}</span>
           )}
-          <span className="conv-item__dot">·</span>
-          <span className="conv-item__time">{formatRelativeTime(conversation.updatedAt)}</span>
+          <span className="conv-item__dot text-twitter-gray-1">·</span>
+          <span className="conv-item__time text-twitter-gray-1">{formatRelativeTime(conversation.updatedAt)}</span>
         </div>
-        <div className={`conv-item__preview${unread ? ' conv-item__preview--unread' : ''}`}>
+        <div className={`conv-item__preview ${unread ? 'conv-item__preview--unread text-white font-semibold' : 'text-twitter-gray-1'}`}>
           {preview}
         </div>
       </div>
@@ -83,24 +82,23 @@ export default function ConversationListItem({
       {unread && <span className="conv-item__unread-dot" />}
     </button>
   );
-}
+};
 
 interface GroupAvatarStackProps {
   participantIds: number[];
 }
 
-function GroupAvatarStack({ participantIds }: GroupAvatarStackProps) {
-  const user1 = useUserDisplay(participantIds[0]);
-  const user2 = useUserDisplay(participantIds[1]);
-  const users = [user1, user2].filter(Boolean);
-
+const GroupAvatarStack: React.FC<GroupAvatarStackProps> = ({ participantIds }) => {
+  const users = participantIds.slice(0, 2).map((id) => getUserDisplay(id));
   return (
     <div className="group-avatar-stack">
       {users.map((u, i) => (
-        <span key={u.id} className="group-avatar-stack__item" style={{ zIndex: 2 - i }}>
-          <Avatar user={u} size={i === 0 ? 34 : 26} />
+        <span key={u.id || i} className="group-avatar-stack__item" style={{ zIndex: 2 - i }}>
+          <Avatar user={u} size={i === 0 ? 32 : 24} />
         </span>
       ))}
     </div>
   );
-}
+};
+
+export default ConversationListItem;

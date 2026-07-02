@@ -21,4 +21,18 @@ public class ChatMessageResponse {
     private MessageType messageType;
     private MessageStatus status;
     private LocalDateTime createdAt;
+    private boolean edited;
+    private LocalDateTime editedAt;
+    private boolean deleted;
+    private java.util.List<ReactionResponse> reactions;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ReactionResponse {
+        private String reaction;
+        private Long userId;
+    }
 }
+

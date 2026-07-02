@@ -9,8 +9,8 @@ import NewMessageModal from '../components/chat/NewMessageModal';
 import { useChat } from '../context/ChatContext';
 import './Messages.css';
 
-export default function Messages() {
-  const { conversationId } = useParams();
+const Messages: React.FC = () => {
+  const { conversationId } = useParams<{ conversationId?: string }>();
   const navigate = useNavigate();
   const {
     conversations,
@@ -45,23 +45,25 @@ export default function Messages() {
     sendMarkRead(activeIdNum, last.id);
   }, [activeIdNum, messages.length, sendMarkRead]);
 
-  function handleSelect(id: number) {
+  const handleSelect = (id: number) => {
     navigate(`/messages/${id}`);
-  }
+  };
 
-  function handleSend(content: string, messageType?: string) {
+  const handleSend = (content: string, type: 'TEXT' | 'IMAGE' | 'VIDEO' | 'SYSTEM' = 'TEXT') => {
     if (!activeIdNum) return;
-    sendMessage(activeIdNum, content, messageType);
-  }
+    sendMessage(activeIdNum, content, type);
+  };
 
-  function handleTyping() {
+  const handleTyping = () => {
     if (activeIdNum) sendTyping(activeIdNum);
-  }
+  };
 
-  function handleNewMessageClose(newConversationId?: number) {
+  const handleNewMessageClose = (newConversationId?: number) => {
     setShowNewMessage(false);
-    if (newConversationId) navigate(`/messages/${newConversationId}`);
-  }
+    if (newConversationId) {
+      navigate(`/messages/${newConversationId}`);
+    }
+  };
 
   return (
     <div className="messages-page">
@@ -81,8 +83,9 @@ export default function Messages() {
               messages={messages}
               typingUserIds={typingUserIds}
               hasMore={hasMoreMessages}
-              onLoadMore={() => loadOlderMessages(activeIdNum!)}
+              onLoadMore={() => activeIdNum && loadOlderMessages(activeIdNum)}
               loading={messagesLoading}
+              isGroup={activeConversation?.type === 'GROUP'}
             />
             <MessageComposer
               onSend={handleSend}
@@ -98,4 +101,6 @@ export default function Messages() {
       {showNewMessage && <NewMessageModal onClose={handleNewMessageClose} />}
     </div>
   );
-}
+};
+
+export default Messages;

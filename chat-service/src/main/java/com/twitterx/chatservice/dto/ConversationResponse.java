@@ -18,7 +18,9 @@ public class ConversationResponse {
     private ConversationType type;
     private String name;
     private List<Long> participantIds;
+    private String groupImageUrl;
     private ChatMessageResponse lastMessage; // null if no messages yet
     private long unreadCount;
     private LocalDateTime updatedAt;
 }
+

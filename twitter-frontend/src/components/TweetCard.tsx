@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { formatRelativeTime } from '../utils/date';
 import ReplyDialog from './ReplyDialog';
+import ImageViewer from './ImageViewer';
 import toast from 'react-hot-toast';
 import { Tweet } from '../types';
 
@@ -39,6 +40,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(tweet.content);
   const [showMenu, setShowMenu] = useState(false);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
 
   // --- Likes status & mutation ---
   const { data: isLiked } = useQuery({
@@ -89,6 +91,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['like-status', currentUserId, tweet.tweetId] });
       queryClient.invalidateQueries({ queryKey: ['tweet-detail', tweet.tweetId] });
+      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
     }
   });
 
@@ -140,6 +143,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['retweet-status', currentUserId, tweet.tweetId] });
       queryClient.invalidateQueries({ queryKey: ['tweet-detail', tweet.tweetId] });
+      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
     },
     onSuccess: () => {
       toast.success(isRetweeted ? 'Retweet removed' : 'Retweeted successfully');
@@ -156,10 +160,11 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
   const bookmarkMutation = useMutation({
     mutationFn: async () => {
       if (isBookmarked) {
-        const res = await socialService.removeBookmark(tweet.tweetId, currentUserId);
-        return { data: res };
+        await socialService.removeBookmark(tweet.tweetId, currentUserId);
+        return false;
       } else {
-        return socialService.bookmarkTweet(tweet.tweetId, currentUserId);
+        await socialService.bookmarkTweet(tweet.tweetId, currentUserId);
+        return true;
       }
     },
     onMutate: async () => {
@@ -170,6 +175,13 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
 
       queryClient.setQueryData(['bookmark-status', currentUserId, tweet.tweetId], !isBookmarked);
 
+      if (isBookmarked) {
+        queryClient.setQueryData(['bookmarks', currentUserId], (old: any[] | undefined) => {
+          if (!old) return [];
+          return old.filter((t) => t.tweetId !== tweet.tweetId);
+        });
+      }
+
       return { previousBookmarkStatus };
     },
     onError: (_err, _variables, context) => {
@@ -178,14 +190,16 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
       }
       toast.error('Failed to update bookmark status');
     },
+    onSuccess: (newStatus) => {
+      queryClient.setQueryData(['bookmark-status', currentUserId, tweet.tweetId], newStatus);
+      toast.success(newStatus ? 'Saved to Bookmarks' : 'Removed from Bookmarks');
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['bookmark-status', currentUserId, tweet.tweetId] });
       queryClient.invalidateQueries({ queryKey: ['bookmarks', currentUserId] });
-    },
-    onSuccess: () => {
-      toast.success(isBookmarked ? 'Removed from Bookmarks' : 'Saved to Bookmarks');
     }
   });
+
 
   // --- Delete Tweet Mutation ---
   const deleteMutation = useMutation({
@@ -194,6 +208,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
       queryClient.invalidateQueries({ queryKey: ['tweets'] });
       queryClient.invalidateQueries({ queryKey: ['feed-tweets'] });
       queryClient.invalidateQueries({ queryKey: ['user-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
       toast.success('Post deleted successfully');
     },
     onError: () => {
@@ -210,6 +225,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
       queryClient.invalidateQueries({ queryKey: ['feed-tweets'] });
       queryClient.invalidateQueries({ queryKey: ['tweet-detail', tweet.tweetId] });
       queryClient.invalidateQueries({ queryKey: ['user-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
       toast.success('Post updated');
     },
     onError: () => {
@@ -364,13 +380,26 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
         {tweet.mediaUrls && tweet.mediaUrls.length > 0 && !isEditing && (
           <div className="mt-3 rounded-2xl overflow-hidden border border-twitter-dark-4 bg-twitter-dark-2">
             {tweet.mediaUrls.map((url, index) => {
-              const isVideo = url.endsWith('.mp4') || url.includes('/video/') || url.includes('mediaType=VIDEO');
+              const isVideo = /\.(mp4|mov|webm)($|\?)/i.test(url) || url.includes('/video/') || url.includes('mediaType=VIDEO');
+              const imageAndGifUrls = tweet.mediaUrls.filter(u => !(/\.(mp4|mov|webm)($|\?)/i.test(u) || u.includes('/video/') || u.includes('mediaType=VIDEO')));
+              const clickIndex = imageAndGifUrls.indexOf(url);
+              
               return (
                 <div key={index} className="max-h-[500px] overflow-hidden flex justify-center items-center">
                   {isVideo ? (
                     <video src={url} controls className="w-full object-cover max-h-[500px]" onClick={(e) => e.stopPropagation()} />
                   ) : (
-                    <img src={url} alt="Attached Media" className="w-full object-cover max-h-[500px]" />
+                    <img 
+                      src={url} 
+                      alt="Attached Media" 
+                      className="w-full object-cover max-h-[500px] hover:opacity-95 transition-opacity duration-150" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (clickIndex !== -1) {
+                          setViewerIndex(clickIndex);
+                        }
+                      }}
+                    />
                   )}
                 </div>
               );
@@ -442,6 +471,15 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
         isOpen={isReplyOpen}
         onClose={() => setIsReplyOpen(false)}
       />
+
+      {/* Image Viewer Modal */}
+      {viewerIndex !== null && (
+        <ImageViewer
+          urls={tweet.mediaUrls.filter(u => !(/\.(mp4|mov|webm)($|\?)/i.test(u) || u.includes('/video/') || u.includes('mediaType=VIDEO')))}
+          initialIndex={viewerIndex}
+          onClose={() => setViewerIndex(null)}
+        />
+      )}
     </div>
   );
 };

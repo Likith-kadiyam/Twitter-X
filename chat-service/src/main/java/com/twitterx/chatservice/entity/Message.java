@@ -47,6 +47,14 @@ public class Message {
     @Builder.Default
     private boolean deleted = false;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean edited = false;
+
+    @Column(name = "edited_at")
+    private LocalDateTime editedAt;
+
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

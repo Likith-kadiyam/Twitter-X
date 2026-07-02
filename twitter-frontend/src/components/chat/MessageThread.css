@@ -10,7 +10,7 @@
 .msg-thread--empty {
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary, #71767b);
+  color: #71767b;
   font-size: 14px;
   text-align: center;
   padding: 40px 20px;
@@ -30,10 +30,11 @@
 }
 
 .msg-thread__divider span {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--text-secondary, #71767b);
+  color: #71767b;
   background: #16181c;
+  border: 1px solid #2f3336;
   padding: 4px 12px;
   border-radius: 9999px;
 }

@@ -13,12 +13,16 @@ import com.twitterx.chatservice.exception.NotAParticipantException;
 import com.twitterx.chatservice.repository.ConversationParticipantRepository;
 import com.twitterx.chatservice.repository.ConversationRepository;
 import com.twitterx.chatservice.repository.MessageRepository;
+import com.twitterx.chatservice.dto.WsEvent;
+import com.twitterx.chatservice.enums.WsEventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +36,12 @@ public class ConversationService {
     private final ConversationRepository conversationRepository;
     private final ConversationParticipantRepository participantRepository;
     private final MessageRepository messageRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+
 
     @Transactional
     public ConversationResponse createConversation(Long requesterId, CreateConversationRequest request) {
 
-        // de-dupe + ensure requester isn't accidentally listed twice
         Set<Long> otherParticipantIds = new LinkedHashSet<>(request.getParticipantIds());
         otherParticipantIds.remove(requesterId);
 
@@ -52,7 +57,6 @@ public class ConversationService {
             return findOrCreateDirectConversation(requesterId, otherUserId);
         }
 
-        // GROUP
         if (otherParticipantIds.size() < 2) {
             throw new InvalidConversationRequestException("GROUP conversations need at least 2 other participants");
         }
@@ -120,10 +124,7 @@ public class ConversationService {
                 .orElseThrow(() -> new ConversationNotFoundException(conversationId));
     }
 
-    /**
-     * Verifies the user is an active participant. Used both by REST endpoints
-     * and by the STOMP message handler before allowing a send/subscribe.
-     */
+
     @Transactional(readOnly = true)
     public void assertParticipant(Long conversationId, Long userId) {
         boolean active = participantRepository.existsByConversationIdAndUserIdAndLeftAtIsNull(conversationId, userId);
@@ -174,10 +175,12 @@ public class ConversationService {
                 .type(conversation.getType())
                 .name(conversation.getName())
                 .participantIds(participantIds)
+                .groupImageUrl(conversation.getGroupImageUrl())
                 .lastMessage(lastMessage)
                 .unreadCount(unread)
                 .updatedAt(conversation.getUpdatedAt())
                 .build();
+
     }
 
     private ChatMessageResponse toMessageResponse(Message m) {
@@ -191,4 +194,167 @@ public class ConversationService {
                 .createdAt(m.getCreatedAt())
                 .build();
     }
+
+    @Transactional
+    public ConversationResponse updateGroupSettings(Long conversationId, Long requesterId, String name, String groupImageUrl) {
+        Conversation conversation = getConversationOrThrow(conversationId);
+        assertParticipant(conversationId, requesterId);
+        assertAdmin(conversationId, requesterId);
+
+        if (conversation.getType() != ConversationType.GROUP) {
+            throw new IllegalStateException("Only GROUP conversations have settings");
+        }
+
+        if (name != null && !name.isBlank()) {
+            conversation.setName(name);
+        }
+        if (groupImageUrl != null) {
+            if (groupImageUrl.trim().equalsIgnoreCase("REMOVE") || groupImageUrl.isBlank()) {
+                conversation.setGroupImageUrl(null);
+            } else {
+                conversation.setGroupImageUrl(groupImageUrl);
+            }
+        }
+
+
+        conversation = conversationRepository.save(conversation);
+        ConversationResponse response = toResponse(conversation, requesterId);
+
+        WsEvent event = WsEvent.builder()
+                .type(WsEventType.GROUP_UPDATE)
+                .conversationId(conversationId)
+                .userId(requesterId)
+                .conversation(response)
+                .timestamp(LocalDateTime.now())
+                .build();
+        messagingTemplate.convertAndSend("/topic/conversations." + conversationId, event);
+
+        return response;
+    }
+
+    @Transactional
+    public void addParticipant(Long conversationId, Long requesterId, Long userId) {
+        Conversation conversation = getConversationOrThrow(conversationId);
+        assertParticipant(conversationId, requesterId);
+
+        if (conversation.getType() != ConversationType.GROUP) {
+            throw new IllegalStateException("Cannot add members to a ONE_TO_ONE conversation");
+        }
+
+        Optional<ConversationParticipant> existing = participantRepository.findByConversationIdAndUserId(conversationId, userId);
+        if (existing.isPresent()) {
+            ConversationParticipant p = existing.get();
+            if (p.isActive()) {
+
+                return;
+            } else {
+                p.setLeftAt(null);
+                p.setJoinedAt(LocalDateTime.now());
+                participantRepository.save(p);
+            }
+        } else {
+            addParticipant(conversation, userId, false);
+        }
+
+        ConversationResponse response = toResponse(conversation, requesterId);
+
+        WsEvent joinedEvent = WsEvent.builder()
+                .type(WsEventType.USER_JOINED)
+                .conversationId(conversationId)
+                .userId(userId)
+                .timestamp(LocalDateTime.now())
+                .build();
+        messagingTemplate.convertAndSend("/topic/conversations." + conversationId, joinedEvent);
+
+        WsEvent updateEvent = WsEvent.builder()
+                .type(WsEventType.GROUP_UPDATE)
+                .conversationId(conversationId)
+                .userId(requesterId)
+                .conversation(response)
+                .timestamp(LocalDateTime.now())
+                .build();
+        messagingTemplate.convertAndSend("/topic/conversations." + conversationId, updateEvent);
+    }
+
+    @Transactional
+    public void removeParticipant(Long conversationId, Long requesterId, Long userId) {
+        Conversation conversation = getConversationOrThrow(conversationId);
+        assertParticipant(conversationId, requesterId);
+        assertAdmin(conversationId, requesterId);
+
+        if (conversation.getType() != ConversationType.GROUP) {
+            throw new IllegalStateException("Cannot remove members from a ONE_TO_ONE conversation");
+        }
+
+        ConversationParticipant p = participantRepository.findByConversationIdAndUserId(conversationId, userId)
+                .orElseThrow(() -> new NotAParticipantException(userId, conversationId));
+
+        p.setLeftAt(LocalDateTime.now());
+        participantRepository.save(p);
+
+        ConversationResponse response = toResponse(conversation, requesterId);
+
+        // Broadcast USER_LEFT and GROUP_UPDATE
+        WsEvent leftEvent = WsEvent.builder()
+                .type(WsEventType.USER_LEFT)
+                .conversationId(conversationId)
+                .userId(userId)
+                .timestamp(LocalDateTime.now())
+                .build();
+        messagingTemplate.convertAndSend("/topic/conversations." + conversationId, leftEvent);
+
+        WsEvent updateEvent = WsEvent.builder()
+                .type(WsEventType.GROUP_UPDATE)
+                .conversationId(conversationId)
+                .userId(requesterId)
+                .conversation(response)
+                .timestamp(LocalDateTime.now())
+                .build();
+        messagingTemplate.convertAndSend("/topic/conversations." + conversationId, updateEvent);
+    }
+
+    @Transactional
+    public void leaveGroup(Long conversationId, Long userId) {
+        Conversation conversation = getConversationOrThrow(conversationId);
+        assertParticipant(conversationId, userId);
+
+        if (conversation.getType() != ConversationType.GROUP) {
+            throw new IllegalStateException("Cannot leave a ONE_TO_ONE conversation");
+        }
+
+        ConversationParticipant p = participantRepository.findByConversationIdAndUserId(conversationId, userId)
+                .orElseThrow(() -> new NotAParticipantException(userId, conversationId));
+
+        p.setLeftAt(LocalDateTime.now());
+        participantRepository.save(p);
+
+        ConversationResponse response = toResponse(conversation, userId);
+
+        WsEvent leftEvent = WsEvent.builder()
+                .type(WsEventType.USER_LEFT)
+                .conversationId(conversationId)
+                .userId(userId)
+                .timestamp(LocalDateTime.now())
+                .build();
+        messagingTemplate.convertAndSend("/topic/conversations." + conversationId, leftEvent);
+
+        WsEvent updateEvent = WsEvent.builder()
+                .type(WsEventType.GROUP_UPDATE)
+                .conversationId(conversationId)
+                .userId(userId)
+                .conversation(response)
+                .timestamp(LocalDateTime.now())
+                .build();
+        messagingTemplate.convertAndSend("/topic/conversations." + conversationId, updateEvent);
+    }
+
+    public void assertAdmin(Long conversationId, Long userId) {
+        ConversationParticipant participant = participantRepository
+                .findByConversationIdAndUserId(conversationId, userId)
+                .orElseThrow(() -> new NotAParticipantException(userId, conversationId));
+        if (!participant.isAdmin()) {
+            throw new IllegalStateException("User is not an admin of this conversation");
+        }
+    }
 }
+

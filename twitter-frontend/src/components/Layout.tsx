@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import RightSidebar from './RightSidebar';
@@ -9,6 +8,7 @@ import { X } from 'lucide-react';
 const Layout: React.FC = () => {
   const { isComposerOpen, setComposerOpen } = useAuthStore();
   const location = useLocation();
+
   const isMessagesPage = location.pathname.startsWith('/messages');
 
   return (
@@ -21,7 +21,9 @@ const Layout: React.FC = () => {
         </header>
 
         {/* Center Main Content Scroll */}
-        <main className={`flex-grow border-r border-l border-twitter-dark-4 pb-20 sm:pb-0 ${isMessagesPage ? 'max-w-[990px] h-screen sticky top-0' : 'max-w-[600px] min-h-screen'}`}>
+        <main className={`flex-grow border-r border-l border-twitter-dark-4 pb-20 sm:pb-0 min-h-screen ${
+          isMessagesPage ? 'max-w-none' : 'max-w-[600px]'
+        }`}>
           <Outlet />
         </main>
 
@@ -33,6 +35,7 @@ const Layout: React.FC = () => {
         )}
 
       </div>
+
 
       {/* Tweet Composer Modal Dialog */}
       {isComposerOpen && (

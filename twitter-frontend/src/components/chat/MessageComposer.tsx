@@ -1,99 +1,118 @@
 import React, { useRef, useState } from 'react';
-import { Image, Smile, Send, Loader2 } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
+import { Image, Smile, Send } from 'lucide-react';
+import EmojiPicker from '../EmojiPicker';
 import { mediaService } from '../../services/api';
+import { useAuthStore } from '../../store/authStore';
+import Spinner from './Spinner';
 import './MessageComposer.css';
 
 interface MessageComposerProps {
-  onSend: (content: string, messageType?: string) => void;
+  onSend: (content: string, type?: 'TEXT' | 'IMAGE' | 'VIDEO' | 'SYSTEM') => void;
   onTyping?: () => void;
   disabled?: boolean;
 }
 
-export default function MessageComposer({ onSend, onTyping, disabled }: MessageComposerProps) {
+const MessageComposer: React.FC<MessageComposerProps> = ({ onSend, onTyping, disabled }) => {
+  const { user } = useAuthStore();
   const [value, setValue] = useState('');
-  const [isUploading, setIsUploading] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [mediaUploading, setMediaUploading] = useState(false);
+  
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { user } = useAuthStore();
 
-  function autoGrow(el: HTMLTextAreaElement) {
+  const autoGrow = (el: HTMLTextAreaElement) => {
     el.style.height = 'auto';
     el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
-  }
+  };
 
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value);
     autoGrow(e.target);
-    if (e.target.value.trim()) onTyping?.();
-  }
+    if (e.target.value.trim() && onTyping) {
+      onTyping();
+    }
+  };
 
-  function handleSend() {
+  const handleSend = () => {
     const trimmed = value.trim();
-    if (!trimmed || disabled || isUploading) return;
+    if (!trimmed || disabled) return;
     onSend(trimmed, 'TEXT');
     setValue('');
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.focus();
     }
-  }
+  };
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
-  }
+  };
 
-  const handleMediaClick = () => {
-    fileInputRef.current?.click();
+  const handleEmojiSelect = (emoji: string) => {
+    if (textareaRef.current) {
+      const start = textareaRef.current.selectionStart;
+      const end = textareaRef.current.selectionEnd;
+      const text = value;
+      const newValue = text.substring(0, start) + emoji + text.substring(end);
+      setValue(newValue);
+      
+      // Auto-grow after text update
+      setTimeout(() => {
+        if (textareaRef.current) {
+          autoGrow(textareaRef.current);
+          textareaRef.current.focus();
+          textareaRef.current.selectionStart = textareaRef.current.selectionEnd = start + emoji.length;
+        }
+      }, 0);
+    } else {
+      setValue((prev) => prev + emoji);
+    }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !user) return;
 
-    // Reset so same file can be selected again if needed
-    e.target.value = '';
-
-    if (!user?.userId) {
-      console.error("No authenticated user ID found for upload");
-      return;
-    }
-
-    setIsUploading(true);
+    setMediaUploading(true);
     try {
-      const response = await mediaService.uploadMedia(file, user.userId);
-      console.log("Uploaded media response in MessageComposer:", response);
-      if (response && response.url) {
-        onSend(response.url, 'IMAGE');
-      }
+      const media = await mediaService.uploadMedia(file, user.userId);
+      const isVideo = file.type.startsWith('video/');
+      onSend(media.url, isVideo ? 'VIDEO' : 'IMAGE');
     } catch (err) {
-      console.error("Failed to upload image:", err);
-      alert("Failed to upload image. Please try again.");
+      console.error('Failed to upload media:', err);
+      alert('Failed to upload media message');
     } finally {
-      setIsUploading(false);
+      setMediaUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
   return (
     <div className="composer">
+      {/* File input for images/videos */}
+      <input 
+        type="file" 
+        accept="image/*,video/*" 
+        ref={fileInputRef} 
+        onChange={handleFileChange} 
+        className="hidden" 
+        disabled={disabled || mediaUploading}
+      />
+      
       <button 
         className="icon-btn composer__media-btn" 
-        aria-label="Add image" 
-        onClick={handleMediaClick}
-        disabled={disabled || isUploading}
+        aria-label="Add image/video" 
+        onClick={() => fileInputRef.current?.click()}
+        disabled={disabled || mediaUploading}
       >
-        {isUploading ? <Loader2 className="animate-spin" size={20} /> : <Image size={20} />}
+        {mediaUploading ? <Spinner size={16} /> : <Image size={20} />}
       </button>
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        accept="image/*"
-        style={{ display: 'none' }}
-      />
 
       <div className="composer__input-wrap">
         <textarea
@@ -103,21 +122,37 @@ export default function MessageComposer({ onSend, onTyping, disabled }: MessageC
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          disabled={disabled || isUploading}
+          disabled={disabled || mediaUploading}
         />
-        <button className="composer__emoji-btn" aria-label="Add emoji" disabled>
-          <Smile size={20} />
-        </button>
+        
+        <div className="relative">
+          <button 
+            className="composer__emoji-btn" 
+            aria-label="Add emoji" 
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+            disabled={disabled || mediaUploading}
+          >
+            <Smile size={20} />
+          </button>
+          
+          {showEmojiPicker && (
+            <div className="absolute bottom-12 right-0 z-50">
+              <EmojiPicker onSelect={handleEmojiSelect} onClose={() => setShowEmojiPicker(false)} />
+            </div>
+          )}
+        </div>
       </div>
 
       <button
-        className={`composer__send-btn${(value.trim() && !isUploading) ? ' composer__send-btn--active' : ''}`}
+        className={`composer__send-btn${value.trim() ? ' composer__send-btn--active' : ''}`}
         onClick={handleSend}
-        disabled={!value.trim() || disabled || isUploading}
+        disabled={!value.trim() || disabled || mediaUploading}
         aria-label="Send message"
       >
         <Send size={18} />
       </button>
     </div>
   );
-}
+};
+
+export default MessageComposer;

@@ -1,4 +1,4 @@
-.empty-thread {
+.empty-state, .empty-thread {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -6,36 +6,32 @@
   justify-content: center;
   text-align: center;
   padding: 32px;
-  color: var(--text-primary, #eff3f4);
+  height: 100%;
 }
 
-.empty-thread__icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  border: 2px solid var(--text-primary, #eff3f4);
+.empty-state__box, .empty-thread__icon {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
 }
 
-.empty-thread h2 {
-  font-size: 26px;
+.empty-state h1, .empty-thread h2 {
+  font-size: 30px;
   font-weight: 800;
-  margin: 0 0 8px;
+  margin: 0 0 12px;
+  color: #fff;
 }
 
-.empty-thread p {
-  color: var(--text-secondary, #71767b);
-  font-size: 14px;
-  max-width: 280px;
+.empty-state p, .empty-thread p {
+  color: #71767b;
+  font-size: 15px;
+  max-width: 320px;
   line-height: 1.5;
-  margin: 0 0 22px;
+  margin: 0 0 24px;
 }
 
-.empty-thread__cta {
-  background: var(--twitter-blue, #1d9bf0);
+.empty-state__btn, .empty-thread__cta {
+  background: #1d9bf0;
   color: #fff;
   border: none;
   border-radius: 9999px;
@@ -43,8 +39,9 @@
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background-color 0.2s;
 }
-.empty-thread__cta:hover {
-  background: rgba(29, 155, 240, 0.9);
+
+.empty-state__btn:hover, .empty-thread__cta:hover {
+  background: #1a8cd8;
 }

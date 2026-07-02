@@ -3,6 +3,7 @@ package com.twitter.social.service.service.impl;
 import com.twitter.events.commonEvents.NotificationEventDto;
 import com.twitter.events.commonEvents.NotificationType;
 import com.twitter.social.service.Model.Follow;
+import com.twitter.social.service.Model.Profile;
 import com.twitter.social.service.cache.RedisService;
 import com.twitter.social.service.dto.FollowRequestDto;
 import com.twitter.social.service.exception.SocialException;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -88,22 +90,22 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public List<Long> getFollowers(Long userId) {
-
         List<Follow> followers = followRepository.findByFollowingId(userId);
-
-        return followers.stream()
-                .map(Follow::getFollowerId)
-                .toList();
+        List<Long> followerIds = new java.util.ArrayList<>();
+        for (Follow follow : followers) {
+            followerIds.add(follow.getFollowerId());
+        }
+        return followerIds;
     }
 
     @Override
     public List<Long> getFollowing(Long userId) {
-
         List<Follow> following = followRepository.findByFollowerId(userId);
-
-        return following.stream()
-                .map(Follow::getFollowingId)
-                .toList();
+        List<Long> followingIds = new java.util.ArrayList<>();
+        for (Follow follow : following) {
+            followingIds.add(follow.getFollowingId());
+        }
+        return followingIds;
     }
 
     @Override
@@ -120,15 +122,20 @@ public class FollowServiceImpl implements FollowService {
     @Transactional(readOnly = true)
     public List<Long> getFollowSuggestions(Long currentUserId) {
         List<Long> allUserIds = profileRepository.findAll().stream()
-                .map(com.twitter.social.service.Model.Profile::getUserId)
+                .map(Profile::getUserId)
                 .toList();
 
         List<Long> followingIds = getFollowing(currentUserId);
 
-        return allUserIds.stream()
-                .filter(id -> !id.equals(currentUserId))
-                .filter(id -> !followingIds.contains(id))
-                .limit(5)
-                .toList();
+        List<Long> suggestions = new ArrayList<>();
+        for (Long userId : allUserIds) {
+            if (!userId.equals(currentUserId) && !followingIds.contains(userId)) {
+                suggestions.add(userId);
+                if (suggestions.size() >= 5) {
+                    break;
+                }
+            }
+        }
+        return suggestions;
     }
 }

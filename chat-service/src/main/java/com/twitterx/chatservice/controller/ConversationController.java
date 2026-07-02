@@ -3,6 +3,7 @@ package com.twitterx.chatservice.controller;
 import com.twitterx.chatservice.dto.ChatMessageResponse;
 import com.twitterx.chatservice.dto.ConversationResponse;
 import com.twitterx.chatservice.dto.CreateConversationRequest;
+import com.twitterx.chatservice.dto.UpdateGroupSettingsRequest;
 import com.twitterx.chatservice.security.CurrentUserProvider;
 import com.twitterx.chatservice.service.ConversationService;
 import com.twitterx.chatservice.service.MessageService;
@@ -51,8 +52,9 @@ public class ConversationController {
         Long userId = currentUserProvider.getCurrentUserId();
         conversationService.assertParticipant(conversationId, userId);
 
-        return ResponseEntity.ok(messageService.getMessages(conversationId, page, size));
+        return ResponseEntity.ok(messageService.getMessages(conversationId, userId, page, size));
     }
+
 
     @PostMapping("/{conversationId}/read")
     public ResponseEntity<Void> markRead(
@@ -63,4 +65,45 @@ public class ConversationController {
         conversationService.markRead(conversationId, userId, lastReadMessageId);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{conversationId}")
+    public ResponseEntity<ConversationResponse> updateGroupSettings(
+            @PathVariable Long conversationId,
+            @RequestBody UpdateGroupSettingsRequest request) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        ConversationResponse response = conversationService.updateGroupSettings(
+                conversationId, 
+                userId, 
+                request.getName(), 
+                request.getGroupImageUrl()
+        );
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping("/{conversationId}/participants")
+    public ResponseEntity<Void> addParticipant(
+            @PathVariable Long conversationId,
+            @RequestParam Long participantId) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        conversationService.addParticipant(conversationId, userId, participantId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{conversationId}/participants/{participantId}")
+    public ResponseEntity<Void> removeParticipant(
+            @PathVariable Long conversationId,
+            @PathVariable Long participantId) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        conversationService.removeParticipant(conversationId, userId, participantId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{conversationId}/leave")
+    public ResponseEntity<Void> leaveGroup(@PathVariable Long conversationId) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        conversationService.leaveGroup(conversationId, userId);
+        return ResponseEntity.ok().build();
+    }
 }
+

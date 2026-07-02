@@ -22,4 +22,14 @@ public class WsEvent {
     private Long userId;       // who triggered this event
     private Long lastReadMessageId; // only populated for READ_RECEIPT
     private LocalDateTime timestamp;
+
+    // Additional fields for extended events
+    private Long messageId;
+    private String content;
+    private String reaction;
+    private Boolean online;
+    private LocalDateTime lastSeen;
+    private ChatMessageResponse message;
+    private ConversationResponse conversation;
 }
+

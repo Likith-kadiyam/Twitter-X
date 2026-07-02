@@ -28,6 +28,10 @@ public class Conversation {
     @Column(length = 150)
     private String name; // only for GROUP
 
+    @Column(name = "group_image_url", length = 512)
+    private String groupImageUrl;
+
+
     @Column(name = "created_by", nullable = false)
     private Long createdBy;
 

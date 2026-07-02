@@ -1,58 +1,107 @@
-import React from 'react';
-import { ArrowLeft, Info } from 'lucide-react';
-import Avatar from './Avatar';
-import { useUserDisplay } from '../../hooks/userDisplay';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, MoreVertical } from 'lucide-react';
+
+import { useChat } from '../../context/ChatContext';
 import { useAuthStore } from '../../store/authStore';
+import { getUserDisplay, useUserDisplay } from '../../hooks/userDisplay';
+import { formatClockTime, formatDayDivider } from '../../hooks/formatTime';
+import Avatar from './Avatar';
+import GroupDetailsModal from './GroupDetailsModal';
 import './ThreadHeader.css';
 
-interface Conversation {
-  id: number;
-  type: 'ONE_TO_ONE' | 'GROUP';
-  name?: string | null;
-  participantIds: number[];
-}
-
 interface ThreadHeaderProps {
-  conversation: Conversation;
-  onBack?: () => void;
-  onShowInfo?: () => void;
+  conversation: any;
+  onBack: () => void;
 }
 
-export default function ThreadHeader({ conversation, onBack, onShowInfo }: ThreadHeaderProps) {
-  const { user } = useAuthStore();
-  if (!conversation) return null;
+const ThreadHeader: React.FC<ThreadHeaderProps> = ({ conversation, onBack }) => {
+  const { user: currentUser } = useAuthStore();
+  const { onlineStatuses, fetchUserStatus } = useChat();
+
+  const [showDetails, setShowDetails] = useState(false);
 
   const isGroup = conversation.type === 'GROUP';
-  const otherIds = (conversation.participantIds || []).filter((id) => id !== user?.userId);
-  const otherUserId = otherIds[0] || 0;
-  const primaryUser = useUserDisplay(otherUserId);
+  const otherParticipantIds = conversation.participantIds.filter((x: number) => x !== currentUser?.userId);
 
-  const title = isGroup ? conversation.name : primaryUser?.name;
-  const subtitle = isGroup
-    ? `${conversation.participantIds?.length || 0} people`
-    : `@${primaryUser?.username}`;
+  const groupTitle = conversation.name || 'Group Chat';
+
+  let title = groupTitle;
+  let subtitle = `${conversation.participantIds.length} members`;
+  let avatarUser = { name: groupTitle, initial: 'G', color: '#7856ff', username: 'group' };
+
+  const otherId = otherParticipantIds[0];
+  const otherDisplay = useUserDisplay(otherId);
+
+  if (!isGroup && otherId) {
+    title = otherDisplay.name;
+    avatarUser = otherDisplay;
+    
+    // Check online status in context
+    const status = onlineStatuses[otherId];
+    if (status) {
+      if (status.online) {
+        subtitle = 'Online';
+      } else {
+        subtitle = `Last seen ${formatClockTime(status.lastSeen)}`;
+      }
+    } else {
+      subtitle = `@${otherDisplay.username}`;
+    }
+  }
+
+  // Trigger status refresh on mount for DM chat partner
+  useEffect(() => {
+    if (!isGroup && otherId) {
+      fetchUserStatus(otherId);
+    }
+  }, [isGroup, otherId, fetchUserStatus]);
 
   return (
-    <div className="thread-header">
-      <button className="icon-btn thread-header__back" onClick={onBack} aria-label="Back">
-        <ArrowLeft size={20} />
-      </button>
+    <>
+      <header className="thread-hdr">
+        <button className="thread-hdr__back font-bold" onClick={onBack} aria-label="Back">
+          <ArrowLeft size={20} />
+        </button>
 
-      <div className="thread-header__identity">
-        {isGroup ? (
-          <div className="thread-header__group-icon">{conversation.name?.charAt(0) || 'G'}</div>
-        ) : (
-          primaryUser && <Avatar user={primaryUser} size={36} />
-        )}
-        <div className="thread-header__text">
-          <span className="thread-header__title">{title}</span>
-          <span className="thread-header__subtitle">{subtitle}</span>
+        <div className="thread-hdr__avatar">
+          {isGroup && !conversation.groupImageUrl ? (
+            <div className="group-avatar-stack">
+              {otherParticipantIds.slice(0, 2).map((id: number, idx: number) => {
+                const u = getUserDisplay(id);
+                return (
+                  <div key={id} className="group-avatar-stack__item" style={{ zIndex: 2 - idx }}>
+                    <Avatar user={u} size={24} />
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <Avatar 
+              user={isGroup ? { ...avatarUser, avatarUrl: conversation.groupImageUrl } : avatarUser} 
+              size={36} 
+              online={!isGroup && otherId && onlineStatuses[otherId]?.online} 
+            />
+          )}
         </div>
-      </div>
 
-      <button className="icon-btn" aria-label="Conversation info" onClick={onShowInfo}>
-        <Info size={20} />
-      </button>
-    </div>
+        <div className="thread-hdr__info select-none cursor-pointer" onClick={() => isGroup && setShowDetails(true)}>
+          <span className="thread-hdr__title">{title}</span>
+          <span className={`thread-hdr__subtitle ${subtitle === 'Online' ? 'text-[#00ba7c] font-semibold' : ''}`}>{subtitle}</span>
+        </div>
+
+        <div className="thread-hdr__actions">
+          <button className="icon-btn" aria-label="Conversation details" onClick={() => setShowDetails(true)}>
+            <MoreVertical size={18} />
+          </button>
+        </div>
+
+      </header>
+
+      {showDetails && (
+        <GroupDetailsModal conversationId={conversation.id} onClose={() => setShowDetails(false)} />
+      )}
+    </>
   );
-}
+};
+
+export default ThreadHeader;

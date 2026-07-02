@@ -30,9 +30,10 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 11px;
-  height: 11px;
-  background: var(--twx-green, #00ba7c);
-  border: 2px solid var(--bg-primary, #000);
+  width: 12px;
+  height: 12px;
+  background: #00ba7c;
+  border: 2px solid #000;
   border-radius: 50%;
+  z-index: 10;
 }

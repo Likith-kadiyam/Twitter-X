@@ -8,17 +8,18 @@ export function createChatSocket({
 }: {
   onConnect?: () => void;
   onDisconnect?: () => void;
-  onError?: (msg: string) => void;
+  onError?: (err: string) => void;
 }) {
   const token = localStorage.getItem('accessToken');
+  // Pass the token as a query parameter '?token=...' so API Gateway validates it during handshake
   const wsUrl = `/chat-service/ws${token ? `?token=${encodeURIComponent(token)}` : ''}`;
 
   const client = new Client({
     webSocketFactory: () => new SockJS(wsUrl),
-    reconnectDelay: 4000, // auto-reconnect on drop
+    reconnectDelay: 4000,
     heartbeatIncoming: 10000,
     heartbeatOutgoing: 10000,
-    debug: (str) => console.log('[STOMP]', str), // set to console.log for verbose frames
+    debug: () => {}, // Set to console.log for verbose STOMP frame logging
 
     onConnect: () => {
       onConnect?.();

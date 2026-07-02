@@ -1,6 +1,5 @@
 package com.twitter.tweet.service.service.Impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twitter.events.TweetCreatedEvent;
 import com.twitter.events.TweetDeletedEvent;
 import com.twitter.events.TweetUpdatedEvent;
@@ -8,6 +7,7 @@ import com.twitter.tweet.service.client.AuthServiceClient;
 import com.twitter.tweet.service.dto.request.MediaRequest;
 import com.twitter.tweet.service.dto.request.TweetRequest;
 import com.twitter.tweet.service.dto.request.UpdateTweetRequest;
+import com.twitter.tweet.service.dto.response.HashtagResponse;
 import com.twitter.tweet.service.dto.response.TweetResponse;
 import com.twitter.tweet.service.dto.response.UserResponse;
 import com.twitter.tweet.service.events.producer.TweetProducer;
@@ -33,13 +33,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -53,8 +51,6 @@ public class TweetServiceImpl implements TweetService {
     private final TrendingService trendingService;
     private final TweetProducer tweetProducer;
     private final TweetSearchRepository tweetSearchRepository;
-    private final RedisTemplate<String,Object> redisTemplate;
-    private final ObjectMapper objectMapper;
     private final AuthServiceClient authServiceClient;
 
 
@@ -69,37 +65,23 @@ public class TweetServiceImpl implements TweetService {
                 .build();
 
         Tweet savedTweet = tweetRepository.save(tweet);
-        // HANDLE HASHTAGS
+
         if (request.getHashtags() != null && !request.getHashtags().isEmpty()) {
             for (String hashtagName : request.getHashtags()) {
                 String normalizedName = hashtagName.toLowerCase().trim();
-                String redisKey = "hashtag:" + normalizedName;
-                Object cached = redisTemplate.opsForValue().get(redisKey);
-                Hashtag hashtag = null;
-                if (cached instanceof Hashtag h) {
-                    hashtag = h;
-                } else if (cached instanceof Map<?, ?> map) {
-                    hashtag = objectMapper.convertValue(map, Hashtag.class);
-                }
-                if (hashtag == null) {
-                    try {
-                        hashtag = hashtagRepository.findByName(normalizedName)
-                                .orElseGet(() -> {
-                                    Hashtag newHashtag = hashtagRepository.save(
+                Hashtag hashtag;
+                try {
+                    hashtag = hashtagRepository.findByName(normalizedName)
+                            .orElseGet(() ->
+                                    hashtagRepository.save(
                                             Hashtag.builder()
                                                     .name(normalizedName)
                                                     .build()
-                                    );
-                                    redisTemplate.opsForValue().set(redisKey, newHashtag);
-                                    return newHashtag;
-                                });
-
-                        redisTemplate.opsForValue().set(redisKey, hashtag);
-                    } catch (DataIntegrityViolationException ex) {
-                        // Another request inserted the hashtag first
-                        hashtag = hashtagRepository.findByName(normalizedName).orElseThrow();
-                        redisTemplate.opsForValue().set(redisKey, hashtag);
-                    }
+                                    )
+                            );
+                } catch (DataIntegrityViolationException ex) {
+                    log.error("Exception occurred in createTweet method {}", ex.getMessage());
+                    hashtag = hashtagRepository.findByName(normalizedName).orElseThrow();
                 }
 
                 TweetHashtag tweetHashtag = TweetHashtag.builder()
@@ -112,7 +94,6 @@ public class TweetServiceImpl implements TweetService {
             }
         }
 
-        // HANDLE MEDIA
         if (request.getMediaUrls() != null) {
             for (MediaRequest mediaRequest : request.getMediaUrls()) {
                 TweetMedia media = TweetMedia.builder()
@@ -129,7 +110,19 @@ public class TweetServiceImpl implements TweetService {
         UserResponse user = authServiceClient.getUserById(userId);
 
         String username = user.getUsername();
-        // CREATE EVENT
+        List<String> eventMediaUrls = List.of();
+        if (request.getMediaUrls() != null) {
+            eventMediaUrls = request.getMediaUrls().stream()
+                    .map(MediaRequest::getMediaUrl)
+                    .toList();
+        }
+
+        TweetCreatedEvent event = this.getTweetCreatedEvent(savedTweet, request,username,eventMediaUrls);
+        tweetProducer.publishTweetCreatedEvent(event);
+        return TweetResponseMapper.mapToResponse(savedTweet);
+    }
+
+    private TweetCreatedEvent getTweetCreatedEvent(Tweet savedTweet, TweetRequest request, String username,List<String> eventMediaUrls){
         TweetCreatedEvent event = TweetCreatedEvent.builder()
                 .tweetId(savedTweet.getTweetId())
                 .userId(savedTweet.getUserId())
@@ -141,34 +134,15 @@ public class TweetServiceImpl implements TweetService {
                 .viewCount(savedTweet.getViewCount())
                 .username(username)
                 .createdAt(savedTweet.getCreatedAt())
-                .mediaUrls(
-                        request.getMediaUrls() == null
-                                ? List.of()
-                                : request.getMediaUrls()
-                                .stream()
-                                .map(MediaRequest::getMediaUrl)
-                                .toList()
-                )
+                .mediaUrls(eventMediaUrls)
                 .build();
-        tweetProducer.publishTweetCreatedEvent(event);
-        return TweetResponseMapper.mapToResponse(savedTweet);
+        return event;
     }
 
 
     @Override
     public TweetResponse getTweet(Long tweetId) {
-        String redisKey = "tweet:" + tweetId;
-        Object cached = redisTemplate.opsForValue().get(redisKey);
-        Tweet tweet = null;
-        if (cached instanceof Map<?, ?> map) {
-            tweet = objectMapper.convertValue(map, Tweet.class);
-        }
-        if (tweet == null) {
-            tweet = getTweetOrThrow(tweetId);
-            TweetResponse response = TweetResponseMapper.mapToResponse(tweet);
-            redisTemplate.opsForValue().set(redisKey, response);
-        }
-        redisTemplate.opsForValue().increment("tweet:view:" + tweetId);
+        Tweet tweet = this.getTweetOrThrow(tweetId);
         return TweetResponseMapper.mapToResponse(tweet);
     }
 
@@ -183,16 +157,14 @@ public class TweetServiceImpl implements TweetService {
         }
         tweet.setContent(request.getContent());
         Tweet updatedTweet = tweetRepository.save(tweet);
-        // Update Redis cache
-        TweetResponse response = TweetResponseMapper.mapToResponse(updatedTweet);
-        redisTemplate.opsForValue().set("tweet:" + updatedTweet.getTweetId(), response);
+
         TweetUpdatedEvent event = TweetUpdatedEvent.builder()
                 .tweetId(updatedTweet.getTweetId())
                 .content(updatedTweet.getContent())
                 .hashtags(updatedTweet.getTweetHashtags()
-                                .stream()
-                                .map(th -> th.getHashtag().getName())
-                                .toList()
+                        .stream()
+                        .map(th -> th.getHashtag().getName())
+                        .toList()
                 )
                 .build();
 
@@ -205,19 +177,12 @@ public class TweetServiceImpl implements TweetService {
     @Transactional
     public void deleteTweet(Long tweetId, Long userId, String role) {
         log.info("Deleting tweet {} by user {}", tweetId, userId);
-        Tweet tweet = getTweetOrThrow(tweetId);
-
+        Tweet tweet = this.getTweetOrThrow(tweetId);
         if (!tweet.getUserId().equals(userId) && !"ADMIN".equalsIgnoreCase(role)) {
             throw new UnauthorizedTweetAccessException("You are not allowed to delete this tweet");
         }
-
         tweetRepository.delete(tweet);
-        // Remove cached tweet
-        redisTemplate.delete("tweet:" + tweetId);
-        // Remove view counter (optional)
-        redisTemplate.delete("tweet:view:" + tweetId);
         TweetDeletedEvent event = TweetDeletedEvent.builder()
-
                 .tweetId(tweetId)
                 .build();
         tweetProducer.publishTweetDeletedEvent(event);
@@ -246,42 +211,27 @@ public class TweetServiceImpl implements TweetService {
     }
 
     private Tweet getTweetOrThrow(Long tweetId) {
-        return tweetRepository.findById(tweetId)
-                .orElseThrow(() -> {
-                    log.error("Tweet not found with id {}", tweetId);
-                    return new TweetNotFoundException("Tweet not found");
-                });
+        Optional<Tweet> optionalTweet = this.tweetRepository.findById(tweetId);
+        if (optionalTweet.isEmpty()) {
+            log.error("Tweet not found with id {}", tweetId);
+            throw new TweetNotFoundException("Tweet not found");
+        }
+        return optionalTweet.get();
     }
 
     @Override
     public Page<TweetResponse> getAllTweets(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         return tweetRepository.findAll(pageable).map(TweetResponseMapper::mapToResponse);
     }
 
 
     @Override
     public List<TweetResponse> getTrendingTweets(String window) {
-        String redisKey = "trending:cache:" + window;
-        Object cached = redisTemplate.opsForValue().get(redisKey);
-        List<TweetResponse> responses = null;
-        if (cached instanceof List<?> list) {
-            responses = list.stream()
-                    .map(item -> objectMapper.convertValue(item, TweetResponse.class))
-                    .toList();
-        }
-        if (responses == null) {
-            List<Tweet> tweets = trendingService.getTrendingTweets(window);
-            responses = tweets.stream()
-                    .map(TweetResponseMapper::mapToResponse)
-                    .toList();
-            redisTemplate.opsForValue().set(
-                    redisKey,
-                    responses,
-                    Duration.ofMinutes(10)
-            );
-        }
-        return responses;
+        List<Tweet> trendingTweets = trendingService.getTrendingTweets(window);
+        return trendingTweets.stream()
+                .map(TweetResponseMapper::mapToResponse)
+                .toList();
     }
 
     @Override
@@ -313,8 +263,6 @@ public class TweetServiceImpl implements TweetService {
     }
 
 
-
-
     private TweetResponse mapDocumentToResponse(TweetDocument document) {
         return TweetResponse.builder()
                 .tweetId(document.getTweetId())
@@ -340,13 +288,15 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public List<com.twitter.tweet.service.dto.response.HashtagResponse> getTrendingHashtags() {
+    public List<HashtagResponse> getTrendingHashtags() {
         List<Object[]> results = hashtagRepository.findTrendingHashtags(PageRequest.of(0, 20));
-        return results.stream()
-                .map(row -> com.twitter.tweet.service.dto.response.HashtagResponse.builder()
-                        .hashtag((String) row[0])
-                        .posts((Long) row[1])
-                        .build())
-                .toList();
+        List<HashtagResponse> responses = new ArrayList<>();
+        for (Object[] row : results) {
+            responses.add(HashtagResponse.builder()
+                    .hashtag((String) row[0])
+                    .posts((Long) row[1])
+                    .build());
+        }
+        return responses;
     }
 }

@@ -220,10 +220,6 @@ public class ConversationService {
         conversation = conversationRepository.save(conversation);
         ConversationResponse response = toResponse(conversation, requesterId);
 
-<<<<<<< HEAD
-        // Broadcast to WS topic
-=======
->>>>>>> main
         WsEvent event = WsEvent.builder()
                 .type(WsEventType.GROUP_UPDATE)
                 .conversationId(conversationId)
@@ -249,11 +245,6 @@ public class ConversationService {
         if (existing.isPresent()) {
             ConversationParticipant p = existing.get();
             if (p.isActive()) {
-<<<<<<< HEAD
-                // Already in group
-=======
-
->>>>>>> main
                 return;
             } else {
                 p.setLeftAt(null);
@@ -266,10 +257,6 @@ public class ConversationService {
 
         ConversationResponse response = toResponse(conversation, requesterId);
 
-<<<<<<< HEAD
-        // Broadcast USER_JOINED and GROUP_UPDATE
-=======
->>>>>>> main
         WsEvent joinedEvent = WsEvent.builder()
                 .type(WsEventType.USER_JOINED)
                 .conversationId(conversationId)
@@ -341,11 +328,6 @@ public class ConversationService {
         participantRepository.save(p);
 
         ConversationResponse response = toResponse(conversation, userId);
-
-<<<<<<< HEAD
-        // Broadcast USER_LEFT and GROUP_UPDATE
-=======
->>>>>>> main
         WsEvent leftEvent = WsEvent.builder()
                 .type(WsEventType.USER_LEFT)
                 .conversationId(conversationId)

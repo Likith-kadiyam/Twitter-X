@@ -45,8 +45,14 @@ spring:
       host: localhost
       port: 6379
 
+#  elasticsearch:
+#    uris: http://localhost:9200
+
+
   elasticsearch:
-    uris: http://localhost:9200
+    uris: https://09280998e01c449ca9cb7b9b8a1b8aad.us-central1.gcp.cloud.es.io:443
+    username: elastic
+    password: 2HNfrrziMQCn3CbNIhAuk5Ql
 
 server:
   port: 8085

@@ -25,10 +25,6 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setLikeCount(tweet.getLikeCount() + 1);
         tweetRepository.save(tweet);
-<<<<<<< HEAD
-=======
-
->>>>>>> main
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setLikeCount(tweet.getLikeCount());
             tweetSearchRepository.save(doc);
@@ -40,10 +36,6 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setReplyCount(tweet.getReplyCount() + 1);
         tweetRepository.save(tweet);
-<<<<<<< HEAD
-=======
-
->>>>>>> main
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setReplyCount(tweet.getReplyCount());
             tweetSearchRepository.save(doc);
@@ -55,10 +47,6 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setRetweetCount(tweet.getRetweetCount() + 1);
         tweetRepository.save(tweet);
-<<<<<<< HEAD
-=======
-
->>>>>>> main
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setRetweetCount(tweet.getRetweetCount());
             tweetSearchRepository.save(doc);
@@ -70,10 +58,6 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setLikeCount(Math.max(0, tweet.getLikeCount() - 1));
         tweetRepository.save(tweet);
-<<<<<<< HEAD
-=======
-
->>>>>>> main
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setLikeCount(tweet.getLikeCount());
             tweetSearchRepository.save(doc);
@@ -85,10 +69,6 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setReplyCount(Math.max(0, tweet.getReplyCount() - 1));
         tweetRepository.save(tweet);
-<<<<<<< HEAD
-=======
-
->>>>>>> main
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setReplyCount(tweet.getReplyCount());
             tweetSearchRepository.save(doc);
@@ -100,10 +80,6 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setRetweetCount(Math.max(0, tweet.getRetweetCount() - 1));
         tweetRepository.save(tweet);
-<<<<<<< HEAD
-=======
-
->>>>>>> main
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setRetweetCount(tweet.getRetweetCount());
             tweetSearchRepository.save(doc);

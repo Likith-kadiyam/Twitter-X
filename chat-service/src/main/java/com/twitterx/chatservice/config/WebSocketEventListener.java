@@ -7,14 +7,7 @@ import com.twitterx.chatservice.repository.UserStatusRepository;
 import com.twitterx.chatservice.service.ConversationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-<<<<<<< HEAD
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.data.redis.core.StringRedisTemplate;
-=======
-import org.springframework.context.event.EventListener;
->>>>>>> main
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
@@ -33,62 +26,6 @@ public class WebSocketEventListener {
     private final UserStatusRepository userStatusRepository;
     private final ConversationService conversationService;
     private final SimpMessagingTemplate messagingTemplate;
-<<<<<<< HEAD
-    private final StringRedisTemplate redisTemplate;
-
-    @Value("${server.port:8086}")
-    private String serverPort;
-
-    private static final String PRESENCE_SET_KEY_PREFIX = "chat:presence:sessions:";
-    private static final String INSTANCE_SESSIONS_KEY_PREFIX = "chat:presence:instance-sessions:";
-    private static final String SESSION_USER_KEY_PREFIX = "chat:presence:session-user:";
-
-    private String getInstanceId() {
-        try {
-            return java.net.InetAddress.getLocalHost().getHostName() + ":" + serverPort;
-        } catch (Exception e) {
-            return "host:" + serverPort;
-        }
-    }
-
-    @EventListener(ContextRefreshedEvent.class)
-    public void handleContextRefreshed() {
-        String instanceId = getInstanceId();
-        log.info("Cleaning up stale presence sessions for instance: {}", instanceId);
-        try {
-            String instanceKey = INSTANCE_SESSIONS_KEY_PREFIX + instanceId;
-            java.util.Set<String> sessionIds = redisTemplate.opsForSet().members(instanceKey);
-            if (sessionIds != null && !sessionIds.isEmpty()) {
-                for (String sessionId : sessionIds) {
-                    String userKey = SESSION_USER_KEY_PREFIX + sessionId;
-                    String userIdStr = redisTemplate.opsForValue().get(userKey);
-                    if (userIdStr != null) {
-                        Long userId = Long.valueOf(userIdStr);
-                        String sessionsKey = PRESENCE_SET_KEY_PREFIX + userId;
-                        redisTemplate.opsForSet().remove(sessionsKey, sessionId);
-                        
-                        Long remaining = redisTemplate.opsForSet().size(sessionsKey);
-                        if (remaining == null || remaining == 0) {
-                            LocalDateTime disconnectTime = LocalDateTime.now();
-                            UserStatus status = userStatusRepository.findById(userId)
-                                    .orElse(UserStatus.builder().userId(userId).build());
-                            status.setOnline(false);
-                            status.setLastSeen(disconnectTime);
-                            userStatusRepository.save(status);
-
-                            broadcastStatusChange(userId, false, disconnectTime);
-                        }
-                    }
-                    redisTemplate.delete(userKey);
-                }
-            }
-            redisTemplate.delete(instanceKey);
-        } catch (Exception e) {
-            log.error("Failed to clean up stale sessions on startup", e);
-        }
-    }
-=======
->>>>>>> main
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -96,36 +33,6 @@ public class WebSocketEventListener {
         Principal principal = headerAccessor.getUser();
         if (principal != null) {
             Long userId = Long.valueOf(principal.getName());
-<<<<<<< HEAD
-            String sessionId = headerAccessor.getSessionId();
-            log.info("User connected: {}, sessionId: {}", userId, sessionId);
-
-            if (sessionId != null) {
-                String sessionsKey = PRESENCE_SET_KEY_PREFIX + userId;
-                String instanceKey = INSTANCE_SESSIONS_KEY_PREFIX + getInstanceId();
-                String userKey = SESSION_USER_KEY_PREFIX + sessionId;
-
-                redisTemplate.opsForSet().add(sessionsKey, sessionId);
-                redisTemplate.expire(sessionsKey, java.time.Duration.ofDays(1));
-
-                redisTemplate.opsForSet().add(instanceKey, sessionId);
-                redisTemplate.expire(instanceKey, java.time.Duration.ofDays(1));
-
-                redisTemplate.opsForValue().set(userKey, userId.toString(), java.time.Duration.ofDays(1));
-
-                Long totalSessions = redisTemplate.opsForSet().size(sessionsKey);
-                log.info("User {} total active sessions in Redis: {}", userId, totalSessions);
-
-                if (totalSessions != null && totalSessions == 1) {
-                    UserStatus status = userStatusRepository.findById(userId)
-                            .orElse(UserStatus.builder().userId(userId).build());
-                    status.setOnline(true);
-                    userStatusRepository.save(status);
-
-                    broadcastStatusChange(userId, true, status.getLastSeen());
-                }
-            }
-=======
             log.info("User connected: {}", userId);
 
             UserStatus status = UserStatus.builder()
@@ -136,7 +43,6 @@ public class WebSocketEventListener {
             userStatusRepository.save(status);
 
             broadcastStatusChange(userId, true);
->>>>>>> main
         }
     }
 
@@ -146,38 +52,6 @@ public class WebSocketEventListener {
         Principal principal = headerAccessor.getUser();
         if (principal != null) {
             Long userId = Long.valueOf(principal.getName());
-<<<<<<< HEAD
-            String sessionId = headerAccessor.getSessionId();
-            log.info("User disconnected: {}, sessionId: {}", userId, sessionId);
-
-            if (sessionId != null) {
-                String sessionsKey = PRESENCE_SET_KEY_PREFIX + userId;
-                String instanceKey = INSTANCE_SESSIONS_KEY_PREFIX + getInstanceId();
-                String userKey = SESSION_USER_KEY_PREFIX + sessionId;
-
-                redisTemplate.opsForSet().remove(sessionsKey, sessionId);
-                redisTemplate.opsForSet().remove(instanceKey, sessionId);
-                redisTemplate.delete(userKey);
-
-                Long totalSessions = redisTemplate.opsForSet().size(sessionsKey);
-                log.info("User {} remaining active sessions in Redis: {}", userId, totalSessions);
-
-                if (totalSessions == null || totalSessions == 0) {
-                    LocalDateTime disconnectTime = LocalDateTime.now();
-                    UserStatus status = userStatusRepository.findById(userId)
-                            .orElse(UserStatus.builder().userId(userId).build());
-                    status.setOnline(false);
-                    status.setLastSeen(disconnectTime);
-                    userStatusRepository.save(status);
-
-                    broadcastStatusChange(userId, false, disconnectTime);
-                }
-            }
-        }
-    }
-
-    private void broadcastStatusChange(Long userId, boolean online, LocalDateTime lastSeen) {
-=======
             log.info("User disconnected: {}", userId);
 
             UserStatus status = UserStatus.builder()
@@ -192,7 +66,6 @@ public class WebSocketEventListener {
     }
 
     private void broadcastStatusChange(Long userId, boolean online) {
->>>>>>> main
         try {
             List<Long> activeConversations = conversationService.listConversationsForUser(userId).stream()
                     .map(c -> c.getId())
@@ -202,11 +75,7 @@ public class WebSocketEventListener {
                     .type(WsEventType.USER_STATUS)
                     .userId(userId)
                     .online(online)
-<<<<<<< HEAD
-                    .lastSeen(lastSeen)
-=======
                     .lastSeen(LocalDateTime.now())
->>>>>>> main
                     .timestamp(LocalDateTime.now())
                     .build();
 

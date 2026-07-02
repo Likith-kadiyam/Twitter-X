@@ -17,7 +17,6 @@ public interface TweetRepository extends JpaRepository<Tweet,Long> {
             SELECT t
                FROM Tweet t
                WHERE t.createdAt >= :fromTime
-               AND (  t.likeCount > 0 OR t.replyCount > 0 OR t.retweetCount > 0)
          """)
     List<Tweet> findByCreatedAtAfter(LocalDateTime fromTime);
 }

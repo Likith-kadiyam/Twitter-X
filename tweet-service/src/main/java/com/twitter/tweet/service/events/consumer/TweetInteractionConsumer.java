@@ -5,6 +5,8 @@ import com.twitter.events.commonEvents.*;
 import com.twitter.tweet.service.model.Tweet;
 import com.twitter.tweet.service.repository.TweetRepository;
 import com.twitter.tweet.service.repository.elastic.TweetSearchRepository;
+import com.twitter.tweet.service.service.TrendingService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,15 +18,21 @@ import org.springframework.stereotype.Component;
 public class TweetInteractionConsumer {
 
     private final TweetRepository tweetRepository;
+    private final TrendingService trendingService;
     private final TweetSearchRepository tweetSearchRepository;
 
+    @PostConstruct
+    public void init() {
+        System.out.println("TweetInteractionConsumer initialized");
+    }
 
     @KafkaListener(topics = "tweet-liked-topic", groupId = "tweet-group")
     public void consumeTweetLikedEvent(TweetLikedEvent event) {
-        log.info("Tweet liked event received");
+        System.out.println("EVENT RECEIVED");
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setLikeCount(tweet.getLikeCount() + 1);
         tweetRepository.save(tweet);
+
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setLikeCount(tweet.getLikeCount());
             tweetSearchRepository.save(doc);
@@ -36,6 +44,7 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setReplyCount(tweet.getReplyCount() + 1);
         tweetRepository.save(tweet);
+
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setReplyCount(tweet.getReplyCount());
             tweetSearchRepository.save(doc);
@@ -47,6 +56,7 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setRetweetCount(tweet.getRetweetCount() + 1);
         tweetRepository.save(tweet);
+
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setRetweetCount(tweet.getRetweetCount());
             tweetSearchRepository.save(doc);
@@ -58,6 +68,7 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setLikeCount(Math.max(0, tweet.getLikeCount() - 1));
         tweetRepository.save(tweet);
+
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setLikeCount(tweet.getLikeCount());
             tweetSearchRepository.save(doc);
@@ -69,6 +80,7 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setReplyCount(Math.max(0, tweet.getReplyCount() - 1));
         tweetRepository.save(tweet);
+
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setReplyCount(tweet.getReplyCount());
             tweetSearchRepository.save(doc);
@@ -80,6 +92,7 @@ public class TweetInteractionConsumer {
         Tweet tweet = tweetRepository.findById(event.getTweetId()).orElseThrow();
         tweet.setRetweetCount(Math.max(0, tweet.getRetweetCount() - 1));
         tweetRepository.save(tweet);
+
         tweetSearchRepository.findById(event.getTweetId()).ifPresent(doc -> {
             doc.setRetweetCount(tweet.getRetweetCount());
             tweetSearchRepository.save(doc);

@@ -245,6 +245,7 @@ public class ConversationService {
         if (existing.isPresent()) {
             ConversationParticipant p = existing.get();
             if (p.isActive()) {
+
                 return;
             } else {
                 p.setLeftAt(null);
@@ -328,6 +329,7 @@ public class ConversationService {
         participantRepository.save(p);
 
         ConversationResponse response = toResponse(conversation, userId);
+
         WsEvent leftEvent = WsEvent.builder()
                 .type(WsEventType.USER_LEFT)
                 .conversationId(conversationId)

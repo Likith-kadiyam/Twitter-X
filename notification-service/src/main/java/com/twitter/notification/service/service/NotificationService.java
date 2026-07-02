@@ -52,12 +52,11 @@ public class NotificationService {
 
 
     public List<NotificationResponse> getUserNotifications(Long userId) {
-        List<Notification> notifications = repository.findByReceiverUserIdOrderByCreatedAtDesc(userId);
-        List<NotificationResponse> responses = new java.util.ArrayList<>();
-        for (Notification notification : notifications) {
-            responses.add(NotificationResponseMapper.mapToResponse(notification));
-        }
-        return responses;
+        return repository
+                .findByReceiverUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(NotificationResponseMapper::mapToResponse)
+                .toList();
     }
 
     public NotificationResponse markAsRead(Long notificationId) {

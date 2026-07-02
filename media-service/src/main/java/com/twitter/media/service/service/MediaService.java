@@ -136,11 +136,7 @@ public class MediaService {
             throw new UnsupportedFileType("Unable to determine file type");
         }
         if (contentType.startsWith("image/")) {
-            if (contentType.contains("gif")) {
-                return MediaTypes.GIF;
-            } else {
-                return MediaTypes.IMAGE;
-            }
+            return contentType.contains("gif") ? MediaTypes.GIF : MediaTypes.IMAGE;
         }
         if (contentType.startsWith("video/")) {
             return MediaTypes.VIDEO;

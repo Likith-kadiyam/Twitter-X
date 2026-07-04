@@ -249,17 +249,33 @@ export const tweetService = {
   },
 
   getAllTweets: async (page = 0, size = 10) => {
-    const res = await api.get<SpringPage<Tweet>>(`/api/tweets?page=${page}&size=${size}`);
+    const res = await api.get<SpringPage<Tweet>>(
+        `/api/tweets?page=${page}&size=${size}`
+    );
     return res.data;
   },
 
-  getTrendingTweets: async (window = '24h') => {
-    const res = await api.get<Tweet[]>(`/api/tweets/trending?window=${window}`);
-    return res.data;
+  // ✅ Trending Hashtags
+  getTrendingHashtags: async (
+      window: string = "24h"
+  ): Promise<HashtagResponse[]> => {
+
+    const response = await api.get<HashtagResponse[]>(
+        `/api/tweets/hashtags/trending?window=${window}`
+    );
+
+    return response.data;
   },
 
-  getTrendingHashtags: async () => {
-    const res = await api.get<HashtagResponse[]>('/api/tweets/hashtags/trending');
+  // ✅ Trending Tweets
+  getTrendingTweets: async (
+      window: string = "24h"
+  ): Promise<Tweet[]> => {
+
+    const res = await api.get<Tweet[]>(
+        `/api/tweets/trending?window=${window}`
+    );
+
     return res.data;
   },
 };

@@ -81,7 +81,7 @@ public class TweetController {
     }
 
     @GetMapping("/hashtags/trending")
-    public ResponseEntity<List<HashtagResponse>> getTrendingHashtags() {
-        return ResponseEntity.ok(tweetService.getTrendingHashtags());
+    public ResponseEntity<List<HashtagResponse>> getTrendingHashtags(@RequestParam(defaultValue = "24h") String window) {
+        return ResponseEntity.ok(tweetService.getTrendingHashtags(window));
     }
 }

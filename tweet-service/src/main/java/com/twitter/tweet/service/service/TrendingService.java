@@ -7,4 +7,6 @@ import java.util.Set;
 
 public interface TrendingService {
     List<Tweet> getTrendingTweets(String window);
+    double calculateTrendingScore(Tweet tweet);
+
 }

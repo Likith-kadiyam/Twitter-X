@@ -29,9 +29,7 @@ public class FollowController {
 
     @DeleteMapping
     public ApiResponse<String> unfollowUser(@RequestBody FollowRequestDto request) {
-
         followService.unfollowUser(request);
-
         return new ApiResponse<>(
                 "success",
                 "User unfollowed successfully",

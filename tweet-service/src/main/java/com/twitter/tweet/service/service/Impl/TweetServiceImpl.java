@@ -37,6 +37,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -288,15 +290,57 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public List<HashtagResponse> getTrendingHashtags() {
-        List<Object[]> results = hashtagRepository.findTrendingHashtags(PageRequest.of(0, 20));
-        List<HashtagResponse> responses = new ArrayList<>();
-        for (Object[] row : results) {
-            responses.add(HashtagResponse.builder()
-                    .hashtag((String) row[0])
-                    .posts((Long) row[1])
-                    .build());
+    public List<HashtagResponse> getTrendingHashtags(String window) {
+        List<Tweet> trendingTweets = trendingService.getTrendingTweets(window);
+        // Used for ranking
+        Map<String, Double> hashtagScore = new HashMap<>();
+        // Used for display
+        Map<String, Long> hashtagPostCount = new HashMap<>();
+        for (Tweet tweet : trendingTweets) {
+            if (tweet.getTweetHashtags() == null || tweet.getTweetHashtags().isEmpty()) {
+                continue;
+            }
+            double score = trendingService.calculateTrendingScore(tweet);
+            Set<String> uniqueTags = new HashSet<>();
+            for (TweetHashtag tweetHashtag : tweet.getTweetHashtags()) {
+                uniqueTags.add(
+                        tweetHashtag.getHashtag()
+                                .getName()
+                                .trim()
+                                .toLowerCase()
+                );
+            }
+            for (String hashtag : uniqueTags) {
+                // Ranking
+                hashtagScore.merge(
+                        hashtag,
+                        score,
+                        Double::sum
+                );
+                // Actual tweet count
+                hashtagPostCount.merge(
+                        hashtag,
+                        1L,
+                        Long::sum
+                );
+            }
         }
-        return responses;
+
+        return hashtagScore.entrySet()
+                .stream()
+                .sorted(
+                        Map.Entry.<String, Double>comparingByValue()
+                                .reversed()
+                )
+                .limit(20)
+                .map(entry ->
+                        HashtagResponse.builder()
+                                .hashtag(entry.getKey())
+                                .posts(
+                                        hashtagPostCount.get(entry.getKey())
+                                )
+                                .build()
+                )
+                .toList();
     }
 }

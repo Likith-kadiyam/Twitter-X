@@ -97,9 +97,9 @@ const RightSidebar: React.FC = () => {
   const searchRef = useRef<HTMLDivElement>(null);
 
   // Fetch trending tweets using the trending algorithm
-  const { data: trendingTweets } = useQuery({
-    queryKey: ['trending-tweets'],
-    queryFn: () => tweetService.getTrendingTweets('24h'),
+  const { data: trends } = useQuery({
+    queryKey: ['trending-hashtags', '24h'],
+    queryFn: () => tweetService.getTrendingHashtags('24h'),
   });
 
   // Debounce logic for suggestions
@@ -144,49 +144,7 @@ const RightSidebar: React.FC = () => {
     }
   };
 
-  // Extract trending hashtags from trending tweets
-  const allTrends = React.useMemo(() => {
-    if (!trendingTweets) return [];
-    
-    const hashtagMap = new Map<string, number>();
-    const orderList: string[] = [];
 
-    trendingTweets.forEach(tweet => {
-      const tags = new Set<string>();
-      if (tweet.hashtags && Array.isArray(tweet.hashtags)) {
-        tweet.hashtags.forEach((tag: string) => {
-          if (tag) {
-            const clean = tag.startsWith('#') ? tag : `#${tag}`;
-            tags.add(clean);
-          }
-        });
-      }
-      if (tweet.content) {
-        const contentTags = tweet.content.match(/#\w+/g);
-        if (contentTags) {
-          contentTags.forEach((tag: string) => {
-            tags.add(tag);
-          });
-        }
-      }
-      tags.forEach(tag => {
-        if (!hashtagMap.has(tag)) {
-          hashtagMap.set(tag, 0);
-          orderList.push(tag);
-        }
-        hashtagMap.set(tag, hashtagMap.get(tag)! + 1);
-      });
-    });
-
-    return orderList.map(tag => ({
-      hashtag: tag,
-      posts: hashtagMap.get(tag) || 1
-    }));
-  }, [trendingTweets]);
-
-  const trends = React.useMemo(() => {
-    return allTrends.slice(0, 4);
-  }, [allTrends]);
 
   // Fetch dynamic follow suggestions using registered users only
   const { data: suggestionsResponse } = useQuery({
@@ -276,7 +234,7 @@ const RightSidebar: React.FC = () => {
           <h3 className="font-black text-white text-lg tracking-tight">What's happening</h3>
         </div>
         <div className="divide-y divide-twitter-dark-4">
-          {trends.map((trend, i) => (
+          {trends?.slice(0, 4).map((trend, i) => (
             <div
               key={i}
               className="py-3 hover:bg-white/5 transition-colors duration-150 cursor-pointer -mx-4 px-4 text-left first:pt-0 last:pb-0"
@@ -286,12 +244,12 @@ const RightSidebar: React.FC = () => {
               }}
             >
               <span className="text-twitter-gray-1 text-xs">Trending in technology</span>
-              <p className="font-bold text-white text-sm">{trend.hashtag}</p>
+              <p className="font-bold text-white text-sm">#{trend.hashtag}</p>
               <span className="text-twitter-gray-1 text-xs">{trend.posts} Posts</span>
             </div>
           ))}
         </div>
-        {allTrends && allTrends.length > 4 && (
+        {trends && trends.length > 4 && (
           <button
             onClick={() => navigate('/search')}
             className="text-twitter-blue hover:text-twitter-blue-hover text-sm font-semibold mt-1 text-left hover:underline w-full"

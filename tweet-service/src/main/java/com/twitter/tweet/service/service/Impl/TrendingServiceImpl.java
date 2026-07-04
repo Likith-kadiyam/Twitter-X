@@ -49,9 +49,10 @@ public class TrendingServiceImpl implements TrendingService {
         return trendingTweets;
     }
 
-    private double calculateTrendingScore(Tweet tweet) {
-        double engagement = tweet.getLikeCount() + tweet.getReplyCount() * 2 + tweet.getRetweetCount() * 3;
-        double ageHours = Duration.between(tweet.getCreatedAt(), LocalDateTime.now()).toHours();
+    @Override
+    public double calculateTrendingScore(Tweet tweet) {
+        double engagement =1+ tweet.getLikeCount() + tweet.getReplyCount() * 2 + tweet.getRetweetCount() * 3;
+        double ageHours = Duration.between(tweet.getCreatedAt(), LocalDateTime.now()).toSeconds() / 3600.0;
         return engagement / Math.pow(ageHours + 2, 1.5);
     }
 }

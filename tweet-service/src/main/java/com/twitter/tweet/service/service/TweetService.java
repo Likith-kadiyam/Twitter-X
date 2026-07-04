@@ -2,6 +2,7 @@ package com.twitter.tweet.service.service;
 
 import com.twitter.tweet.service.dto.request.TweetRequest;
 import com.twitter.tweet.service.dto.request.UpdateTweetRequest;
+import com.twitter.tweet.service.dto.response.HashtagResponse;
 import com.twitter.tweet.service.dto.response.TweetResponse;
 import org.springframework.data.domain.Page;
 
@@ -29,6 +30,5 @@ public interface TweetService {
     List<TweetResponse> searchSuggestions(String keyword);
 
     List<TweetResponse> getTweetsByUserIds(List<Long> userIds);
-
-    List<com.twitter.tweet.service.dto.response.HashtagResponse> getTrendingHashtags();
+    List<HashtagResponse> getTrendingHashtags(String window);
 }

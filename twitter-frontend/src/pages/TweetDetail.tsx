@@ -546,7 +546,7 @@ const TweetDetail: React.FC = () => {
       setReplyContent('');
       queryClient.invalidateQueries({ queryKey: ['tweet-detail', tweetId] });
       queryClient.invalidateQueries({ queryKey: ['tweets'] });
-      queryClient.invalidateQueries({ queryKey: ['trending-tweets'] });
+      queryClient.invalidateQueries({ queryKey: ['trending-hashtags'] });
       toast.success('Reply posted!');
     },
   });

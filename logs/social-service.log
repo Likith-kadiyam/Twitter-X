@@ -15,7 +15,7 @@
 [INFO] Nothing to compile - all classes are up to date.
 [INFO] 
 [INFO] --- resources:3.3.1:testResources (default-testResources) @ social-service ---
-[INFO] skip non existing resourceDirectory /home/kadiyam-likith/Documents/projects/Twitter-X/social-service/src/test/resources
+[INFO] skip non existing resourceDirectory /home/md-quayem-ashraf/Desktop/TwitterClone/social-service/src/test/resources
 [INFO] 
 [INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ social-service ---
 [INFO] Nothing to compile - all classes are up to date.
@@ -35,41 +35,41 @@
 
  :: Spring Boot ::                (v4.0.7)
 
-2026-06-24T19:18:39.205+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] c.t.s.service.SocialServiceApplication   : Starting SocialServiceApplication using Java 25.0.3 with PID 164137 (/home/kadiyam-likith/Documents/projects/Twitter-X/social-service/target/classes started by kadiyam-likith in /home/kadiyam-likith/Documents/projects/Twitter-X/social-service)
-2026-06-24T19:18:39.210+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] c.t.s.service.SocialServiceApplication   : No active profile set, falling back to 1 default profile: "default"
-2026-06-24T19:18:39.320+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2026-06-24T19:18:39.321+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2026-06-24T19:18:41.060+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-06-24T19:18:41.063+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-24T19:18:41.272+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 198 ms. Found 9 JPA repository interfaces.
-2026-06-24T19:18:41.297+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-06-24T19:18:41.298+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-06-24T19:18:41.319+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.BookmarkRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-06-24T19:18:41.320+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.FollowRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-06-24T19:18:41.320+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.LikeRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-06-24T19:18:41.320+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ProfileRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-06-24T19:18:41.321+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ReplyBookmarkRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-06-24T19:18:41.321+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ReplyLikeRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-06-24T19:18:41.322+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ReplyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-06-24T19:18:41.322+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ReplyRetweetRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-06-24T19:18:41.322+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.RetweetRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-06-24T19:18:41.322+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 12 ms. Found 0 Redis repository interfaces.
-2026-06-24T19:18:41.871+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=0688007a-db1d-3fd3-9bf2-755cde5c43b8
-2026-06-24T19:18:43.014+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8084 (http)
-2026-06-24T19:18:43.024+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-24T19:18:43.024+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
-2026-06-24T19:18:43.053+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3732 ms
-2026-06-24T19:18:44.043+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-06-24T19:18:44.093+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.19.Final
-2026-06-24T19:18:44.557+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-24T19:18:44.590+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-24T19:18:44.736+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@28a05ea9
-2026-06-24T19:18:44.738+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-24T19:18:44.806+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:postgresql://localhost:5433/social-service]
+2026-07-04T11:25:42.322+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] c.t.s.service.SocialServiceApplication   : Starting SocialServiceApplication using Java 17.0.19 with PID 8476 (/home/md-quayem-ashraf/Desktop/TwitterClone/social-service/target/classes started by md-quayem-ashraf in /home/md-quayem-ashraf/Desktop/TwitterClone/social-service)
+2026-07-04T11:25:42.343+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] c.t.s.service.SocialServiceApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-07-04T11:25:42.810+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-07-04T11:25:42.810+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-07-04T11:25:47.933+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-07-04T11:25:47.938+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-04T11:25:48.493+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 524 ms. Found 9 JPA repository interfaces.
+2026-07-04T11:25:48.560+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-07-04T11:25:48.563+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-07-04T11:25:48.618+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.BookmarkRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-07-04T11:25:48.619+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.FollowRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-07-04T11:25:48.621+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.LikeRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-07-04T11:25:48.622+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ProfileRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-07-04T11:25:48.623+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ReplyBookmarkRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-07-04T11:25:48.628+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ReplyLikeRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-07-04T11:25:48.629+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ReplyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-07-04T11:25:48.634+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.ReplyRetweetRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-07-04T11:25:48.635+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.twitter.social.service.repository.RetweetRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-07-04T11:25:48.636+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 43 ms. Found 0 Redis repository interfaces.
+2026-07-04T11:25:50.587+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=0688007a-db1d-3fd3-9bf2-755cde5c43b8
+2026-07-04T11:25:54.668+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8084 (http)
+2026-07-04T11:25:54.797+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-04T11:25:54.799+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-07-04T11:25:55.024+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 12209 ms
+2026-07-04T11:25:59.744+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-07-04T11:25:59.896+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.19.Final
+2026-07-04T11:26:01.380+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-04T11:26:01.459+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-04T11:26:02.378+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5b429904
+2026-07-04T11:26:02.382+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-07-04T11:26:02.587+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/social-service]
 	Database driver: PostgreSQL JDBC Driver
 	Database dialect: PostgreSQLDialect
-	Database version: 17.10
+	Database version: 16.14
 	Default catalog/schema: social-service/public
 	Autocommit mode: undefined/unknown
 	Isolation level: READ_COMMITTED [default READ_COMMITTED]
@@ -77,105 +77,143 @@
 	Pool: DataSourceConnectionProvider
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-06-24T19:18:45.786+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-24T19:18:45.852+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-24T19:18:46.172+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-06-24T19:18:46.504+05:30  WARN 164137 --- [SOCIAL-SERVICE] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-24T19:18:46.685+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'tweet-service' URL not provided. Will try picking an instance via load-balancing.
-2026-06-24T19:18:47.311+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'auth-service' URL not provided. Will try picking an instance via load-balancing.
-2026-06-24T19:18:47.344+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'media-service' URL not provided. Will try picking an instance via load-balancing.
-2026-06-24T19:18:47.681+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
-2026-06-24T19:18:48.990+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
-2026-06-24T19:18:49.081+05:30  WARN 164137 --- [SOCIAL-SERVICE] [  restartedMain] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-24T19:18:49.111+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 28 endpoints beneath base path '/actuator'
-2026-06-24T19:18:49.192+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-24T19:18:49.208+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-24T19:18:49.210+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-24T19:18:49.216+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-24T19:18:49.216+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-24T19:18:49.216+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-24T19:18:49.216+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-24T19:18:49.216+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-24T19:18:49.216+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-24T19:18:49.216+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-24T19:18:49.440+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-24T19:18:49.442+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-24T19:18:49.444+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-24T19:18:49.446+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782308929445 with initial instances count: 1
-2026-06-24T19:18:49.463+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SOCIAL-SERVICE with eureka with status UP
-2026-06-24T19:18:49.463+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782308929463, current=UP, previous=STARTING]
-2026-06-24T19:18:49.464+05:30  INFO 164137 --- [SOCIAL-SERVICE] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084: registering service...
-2026-06-24T19:18:49.476+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8084 (http) with context path '/'
-2026-06-24T19:18:49.477+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
-2026-06-24T19:18:49.491+05:30  INFO 164137 --- [SOCIAL-SERVICE] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084 - registration status: 204
-2026-06-24T19:18:49.495+05:30  INFO 164137 --- [SOCIAL-SERVICE] [  restartedMain] c.t.s.service.SocialServiceApplication   : Started SocialServiceApplication in 10.91 seconds (process running for 11.788)
-2026-06-24T19:20:23.081+05:30  INFO 164137 --- [SOCIAL-SERVICE] [nio-8084-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-24T19:20:23.081+05:30  INFO 164137 --- [SOCIAL-SERVICE] [nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-24T19:20:23.082+05:30  INFO 164137 --- [SOCIAL-SERVICE] [nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2026-06-24T19:23:49.217+05:30  INFO 164137 --- [SOCIAL-SERVICE] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-24T19:28:49.218+05:30  INFO 164137 --- [SOCIAL-SERVICE] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-24T19:29:52.808+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application SOCIAL-SERVICE with eureka with status DOWN
-2026-06-24T19:29:52.808+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782309592808, current=DOWN, previous=UP]
-2026-06-24T19:29:52.812+05:30  INFO 164137 --- [SOCIAL-SERVICE] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084: registering service...
-2026-06-24T19:29:52.820+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
-2026-06-24T19:29:52.836+05:30  INFO 164137 --- [SOCIAL-SERVICE] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
-2026-06-24T19:29:52.844+05:30  INFO 164137 --- [SOCIAL-SERVICE] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084 - registration status: 204
-2026-06-24T19:29:52.854+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-06-24T19:29:52.859+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-06-24T19:29:52.860+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-06-24T19:29:52.871+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
-2026-06-24T19:29:55.872+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
-2026-06-24T19:29:55.876+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on DELETE request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084": Connect to http://localhost:8761 failed: Connection refused
+2026-07-04T11:26:06.273+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-04T11:26:06.617+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-04T11:26:07.515+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-04T11:26:08.206+05:30  WARN 8476 --- [SOCIAL-SERVICE] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-07-04T11:26:08.795+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'tweet-service' URL not provided. Will try picking an instance via load-balancing.
+2026-07-04T11:26:10.073+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'auth-service' URL not provided. Will try picking an instance via load-balancing.
+2026-07-04T11:26:10.181+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'media-service' URL not provided. Will try picking an instance via load-balancing.
+2026-07-04T11:26:11.227+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-07-04T11:26:16.853+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
+2026-07-04T11:26:17.045+05:30  WARN 8476 --- [SOCIAL-SERVICE] [  restartedMain] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-07-04T11:26:17.115+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 28 endpoints beneath base path '/actuator'
+2026-07-04T11:26:17.365+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-07-04T11:26:17.423+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-07-04T11:26:17.433+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-07-04T11:26:17.455+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-07-04T11:26:17.455+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-07-04T11:26:17.455+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-07-04T11:26:17.455+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-07-04T11:26:17.455+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-07-04T11:26:17.456+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-07-04T11:26:17.456+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-07-04T11:26:18.226+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-07-04T11:26:18.234+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-07-04T11:26:18.239+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-07-04T11:26:18.244+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1783144578242 with initial instances count: 1
+2026-07-04T11:26:18.281+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SOCIAL-SERVICE with eureka with status UP
+2026-07-04T11:26:18.284+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1783144578284, current=UP, previous=STARTING]
+2026-07-04T11:26:18.289+05:30  INFO 8476 --- [SOCIAL-SERVICE] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.3.10:SOCIAL-SERVICE:8084: registering service...
+2026-07-04T11:26:18.324+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8084 (http) with context path '/'
+2026-07-04T11:26:18.326+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
+2026-07-04T11:26:18.371+05:30  INFO 8476 --- [SOCIAL-SERVICE] [  restartedMain] c.t.s.service.SocialServiceApplication   : Started SocialServiceApplication in 39.553 seconds (process running for 42.415)
+2026-07-04T11:26:18.410+05:30  INFO 8476 --- [SOCIAL-SERVICE] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.3.10:SOCIAL-SERVICE:8084 - registration status: 204
+2026-07-04T11:30:00.555+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application SOCIAL-SERVICE with eureka with status DOWN
+2026-07-04T11:30:00.563+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1783144800563, current=DOWN, previous=UP]
+2026-07-04T11:30:00.567+05:30  INFO 8476 --- [SOCIAL-SERVICE] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.3.10:SOCIAL-SERVICE:8084: registering service...
+2026-07-04T11:30:00.840+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-07-04T11:30:00.672+05:30  INFO 8476 --- [SOCIAL-SERVICE] [foReplicator-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on POST request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE": localhost:8761 failed to respond
 
-org.springframework.web.client.ResourceAccessException: I/O error on DELETE request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084": Connect to http://localhost:8761 failed: Connection refused
+org.springframework.web.client.ResourceAccessException: I/O error on POST request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE": localhost:8761 failed to respond
 	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.createResourceAccessException(DefaultRestClient.java:779) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:624) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchange(DefaultRestClient.java:572) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.web.client.RestClient$RequestHeadersSpec.exchange(RestClient.java:747) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.executeAndExtract(DefaultRestClient.java:924) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.toBodilessEntity(DefaultRestClient.java:888) ~[spring-web-7.0.8.jar:7.0.8]
-	at org.springframework.cloud.netflix.eureka.http.RestClientEurekaHttpClient.cancel(RestClientEurekaHttpClient.java:73) ~[spring-cloud-netflix-eureka-client-5.0.2.jar:5.0.2]
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74) ~[eureka-client-2.0.6.jar:2.0.6]
+	at org.springframework.cloud.netflix.eureka.http.RestClientEurekaHttpClient.register(RestClientEurekaHttpClient.java:64) ~[spring-cloud-netflix-eureka-client-5.0.2.jar:5.0.2]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59) ~[eureka-client-2.0.6.jar:2.0.6]
 	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:90) ~[eureka-client-2.0.6.jar:2.0.6]
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71) ~[eureka-client-2.0.6.jar:2.0.6]
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59) ~[eureka-client-2.0.6.jar:2.0.6]
 	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120) ~[eureka-client-2.0.6.jar:2.0.6]
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71) ~[eureka-client-2.0.6.jar:2.0.6]
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59) ~[eureka-client-2.0.6.jar:2.0.6]
 	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76) ~[eureka-client-2.0.6.jar:2.0.6]
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71) ~[eureka-client-2.0.6.jar:2.0.6]
-	at com.netflix.discovery.DiscoveryClient.unregister(DiscoveryClient.java:934) ~[eureka-client-2.0.6.jar:2.0.6]
-	at com.netflix.discovery.DiscoveryClient.shutdown(DiscoveryClient.java:915) ~[eureka-client-2.0.6.jar:2.0.6]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
-	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMethod.invoke(InitDestroyAnnotationBeanPostProcessor.java:453) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeDestroyMethods(InitDestroyAnnotationBeanPostProcessor.java:411) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeDestruction(InitDestroyAnnotationBeanPostProcessor.java:237) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:200) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.beans.factory.support.DisposableBeanAdapter.run(DisposableBeanAdapter.java:193) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.cloud.context.scope.GenericScope$BeanLifecycleWrapper.destroy(GenericScope.java:387) ~[spring-cloud-context-5.0.2.jar:5.0.2]
-	at org.springframework.cloud.context.scope.GenericScope.destroy(GenericScope.java:134) ~[spring-cloud-context-5.0.2.jar:5.0.2]
-	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:209) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroyBean(DefaultSingletonBeanRegistry.java:795) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingleton(DefaultSingletonBeanRegistry.java:745) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingleton(DefaultListableBeanFactory.java:1507) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingletons(DefaultSingletonBeanRegistry.java:704) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingletons(DefaultListableBeanFactory.java:1500) ~[spring-beans-7.0.8.jar:7.0.8]
-	at org.springframework.context.support.AbstractApplicationContext.destroyBeans(AbstractApplicationContext.java:1246) ~[spring-context-7.0.8.jar:7.0.8]
-	at org.springframework.context.support.AbstractApplicationContext.doClose(AbstractApplicationContext.java:1207) ~[spring-context-7.0.8.jar:7.0.8]
-	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.doClose(ServletWebServerApplicationContext.java:176) ~[spring-boot-web-server-4.0.7.jar:4.0.7]
-	at org.springframework.context.support.AbstractApplicationContext.close(AbstractApplicationContext.java:1153) ~[spring-context-7.0.8.jar:7.0.8]
-	at org.springframework.boot.SpringApplicationShutdownHook.closeAndWait(SpringApplicationShutdownHook.java:147) ~[spring-boot-4.0.7.jar:4.0.7]
-	at java.base/java.lang.Iterable.forEach(Iterable.java:75) ~[na:na]
-	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:116) ~[spring-boot-4.0.7.jar:4.0.7]
-	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.DiscoveryClient.register(DiscoveryClient.java:843) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.InstanceInfoReplicator.run(InstanceInfoReplicator.java:125) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.InstanceInfoReplicator$2.run(InstanceInfoReplicator.java:105) ~[eureka-client-2.0.6.jar:2.0.6]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+Caused by: org.apache.hc.core5.http.NoHttpResponseException: localhost:8761 failed to respond
+	at org.apache.hc.core5.http.impl.io.DefaultBHttpClientConnection.receiveResponseHeader(DefaultBHttpClientConnection.java:333) ~[httpcore5-5.3.6.jar:5.3.6]
+	at org.apache.hc.core5.http.impl.io.HttpRequestExecutor.execute(HttpRequestExecutor.java:196) ~[httpcore5-5.3.6.jar:5.3.6]
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.lambda$execute$0(InternalExecRuntime.java:236) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager$InternalConnectionEndpoint.execute(PoolingHttpClientConnectionManager.java:798) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.execute(InternalExecRuntime.java:233) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.MainClientExec.execute(MainClientExec.java:120) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:200) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:195) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:168) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:112) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:110) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:185) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183) ~[httpclient5-5.5.2.jar:5.5.2]
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:87) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:80) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeWithRequestAndBody(AbstractBufferingClientHttpRequest.java:89) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.http.client.InterceptingClientHttpRequest$EndOfChainRequestExecution.execute(InterceptingClientHttpRequest.java:102) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.cloud.netflix.eureka.http.RestClientTransportClientFactory.lambda$newClient$2(RestClientTransportClientFactory.java:98) ~[spring-cloud-netflix-eureka-client-5.0.2.jar:5.0.2]
+	at org.springframework.http.client.ClientHttpRequestInterceptor.lambda$apply$0(ClientHttpRequestInterceptor.java:89) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:73) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:50) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:80) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:614) ~[spring-web-7.0.8.jar:7.0.8]
+	... 23 common frames omitted
+
+2026-07-04T11:30:00.843+05:30  WARN 8476 --- [SOCIAL-SERVICE] [foReplicator-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on POST request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE": localhost:8761 failed to respond
+2026-07-04T11:30:01.008+05:30  INFO 8476 --- [SOCIAL-SERVICE] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-07-04T11:30:01.019+05:30  INFO 8476 --- [SOCIAL-SERVICE] [foReplicator-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on POST request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE": Connect to http://localhost:8761 failed: Connection refused
+
+org.springframework.web.client.ResourceAccessException: I/O error on POST request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE": Connect to http://localhost:8761 failed: Connection refused
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.createResourceAccessException(DefaultRestClient.java:779) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:624) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchange(DefaultRestClient.java:572) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.client.RestClient$RequestHeadersSpec.exchange(RestClient.java:747) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.executeAndExtract(DefaultRestClient.java:924) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.toBodilessEntity(DefaultRestClient.java:888) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.cloud.netflix.eureka.http.RestClientEurekaHttpClient.register(RestClientEurekaHttpClient.java:64) ~[spring-cloud-netflix-eureka-client-5.0.2.jar:5.0.2]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:120) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:79) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.DiscoveryClient.register(DiscoveryClient.java:843) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.InstanceInfoReplicator.run(InstanceInfoReplicator.java:125) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.InstanceInfoReplicator$2.run(InstanceInfoReplicator.java:105) ~[eureka-client-2.0.6.jar:2.0.6]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
 Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 failed: Connection refused
 	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:639) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:543) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:594) ~[na:na]
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:284) ~[na:na]
-	at java.base/java.net.Socket.connect(Socket.java:659) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:684) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
 	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:226) ~[httpclient5-5.5.2.jar:5.5.2]
 	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:497) ~[httpclient5-5.5.2.jar:5.5.2]
 	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:164) ~[httpclient5-5.5.2.jar:5.5.2]
@@ -205,12 +243,53 @@ Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http:
 	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:50) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:80) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:614) ~[spring-web-7.0.8.jar:7.0.8]
-	... 39 common frames omitted
+	... 24 common frames omitted
 
-2026-06-24T19:29:55.879+05:30  WARN 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on DELETE request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084": Connect to http://localhost:8761 failed: Connection refused
-2026-06-24T19:29:55.882+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on DELETE request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084": Connect to http://localhost:8761 failed: Connection refused
+2026-07-04T11:30:01.033+05:30  WARN 8476 --- [SOCIAL-SERVICE] [foReplicator-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on POST request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE": Connect to http://localhost:8761 failed: Connection refused
+2026-07-04T11:30:01.036+05:30  WARN 8476 --- [SOCIAL-SERVICE] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.3.10:SOCIAL-SERVICE:8084 - registration failed Cannot execute request on any known server
 
-org.springframework.web.client.ResourceAccessException: I/O error on DELETE request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084": Connect to http://localhost:8761 failed: Connection refused
+com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.DiscoveryClient.register(DiscoveryClient.java:843) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.InstanceInfoReplicator.run(InstanceInfoReplicator.java:125) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.InstanceInfoReplicator$2.run(InstanceInfoReplicator.java:105) ~[eureka-client-2.0.6.jar:2.0.6]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2026-07-04T11:30:01.043+05:30  WARN 8476 --- [SOCIAL-SERVICE] [foReplicator-%d] c.n.discovery.InstanceInfoReplicator     : There was a problem with the instance info replicator
+
+com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$1.execute(EurekaHttpClientDecorator.java:59) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.register(EurekaHttpClientDecorator.java:56) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.DiscoveryClient.register(DiscoveryClient.java:843) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.InstanceInfoReplicator.run(InstanceInfoReplicator.java:125) ~[eureka-client-2.0.6.jar:2.0.6]
+	at com.netflix.discovery.InstanceInfoReplicator$2.run(InstanceInfoReplicator.java:105) ~[eureka-client-2.0.6.jar:2.0.6]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2026-07-04T11:30:01.226+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-04T11:30:01.290+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-07-04T11:30:01.319+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-07-04T11:30:01.365+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-07-04T11:30:04.366+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2026-07-04T11:30:04.391+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on DELETE request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE/10.10.3.10:SOCIAL-SERVICE:8084": Connect to http://localhost:8761 failed: Connection refused
+
+org.springframework.web.client.ResourceAccessException: I/O error on DELETE request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE/10.10.3.10:SOCIAL-SERVICE:8084": Connect to http://localhost:8761 failed: Connection refused
 	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.createResourceAccessException(DefaultRestClient.java:779) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:624) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchange(DefaultRestClient.java:572) ~[spring-web-7.0.8.jar:7.0.8]
@@ -230,8 +309,10 @@ org.springframework.web.client.ResourceAccessException: I/O error on DELETE requ
 	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71) ~[eureka-client-2.0.6.jar:2.0.6]
 	at com.netflix.discovery.DiscoveryClient.unregister(DiscoveryClient.java:934) ~[eureka-client-2.0.6.jar:2.0.6]
 	at com.netflix.discovery.DiscoveryClient.shutdown(DiscoveryClient.java:915) ~[eureka-client-2.0.6.jar:2.0.6]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
 	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMethod.invoke(InitDestroyAnnotationBeanPostProcessor.java:453) ~[spring-beans-7.0.8.jar:7.0.8]
 	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeDestroyMethods(InitDestroyAnnotationBeanPostProcessor.java:411) ~[spring-beans-7.0.8.jar:7.0.8]
 	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeDestruction(InitDestroyAnnotationBeanPostProcessor.java:237) ~[spring-beans-7.0.8.jar:7.0.8]
@@ -252,14 +333,14 @@ org.springframework.web.client.ResourceAccessException: I/O error on DELETE requ
 	at org.springframework.boot.SpringApplicationShutdownHook.closeAndWait(SpringApplicationShutdownHook.java:147) ~[spring-boot-4.0.7.jar:4.0.7]
 	at java.base/java.lang.Iterable.forEach(Iterable.java:75) ~[na:na]
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:116) ~[spring-boot-4.0.7.jar:4.0.7]
-	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
 Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 failed: Connection refused
 	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:639) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:543) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:594) ~[na:na]
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:284) ~[na:na]
-	at java.base/java.net.Socket.connect(Socket.java:659) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:684) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
 	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:226) ~[httpclient5-5.5.2.jar:5.5.2]
 	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:497) ~[httpclient5-5.5.2.jar:5.5.2]
 	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:164) ~[httpclient5-5.5.2.jar:5.5.2]
@@ -289,10 +370,10 @@ Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http:
 	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:50) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:80) ~[spring-web-7.0.8.jar:7.0.8]
 	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:614) ~[spring-web-7.0.8.jar:7.0.8]
-	... 40 common frames omitted
+	... 42 common frames omitted
 
-2026-06-24T19:29:55.883+05:30  WARN 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on DELETE request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084": Connect to http://localhost:8761 failed: Connection refused
-2026-06-24T19:29:55.883+05:30 ERROR 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.2.198:SOCIAL-SERVICE:8084 - de-registration failedCannot execute request on any known server
+2026-07-04T11:30:04.400+05:30  WARN 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on DELETE request for "http://localhost:8761/eureka/apps/SOCIAL-SERVICE/10.10.3.10:SOCIAL-SERVICE:8084": Connect to http://localhost:8761 failed: Connection refused
+2026-07-04T11:30:04.402+05:30 ERROR 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SOCIAL-SERVICE/10.10.3.10:SOCIAL-SERVICE:8084 - de-registration failedCannot execute request on any known server
 
 com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
 	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112) ~[eureka-client-2.0.6.jar:2.0.6]
@@ -302,8 +383,10 @@ com.netflix.discovery.shared.transport.TransportException: Cannot execute reques
 	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71) ~[eureka-client-2.0.6.jar:2.0.6]
 	at com.netflix.discovery.DiscoveryClient.unregister(DiscoveryClient.java:934) ~[eureka-client-2.0.6.jar:2.0.6]
 	at com.netflix.discovery.DiscoveryClient.shutdown(DiscoveryClient.java:915) ~[eureka-client-2.0.6.jar:2.0.6]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
 	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMethod.invoke(InitDestroyAnnotationBeanPostProcessor.java:453) ~[spring-beans-7.0.8.jar:7.0.8]
 	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeDestroyMethods(InitDestroyAnnotationBeanPostProcessor.java:411) ~[spring-beans-7.0.8.jar:7.0.8]
 	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeDestruction(InitDestroyAnnotationBeanPostProcessor.java:237) ~[spring-beans-7.0.8.jar:7.0.8]
@@ -324,6 +407,12 @@ com.netflix.discovery.shared.transport.TransportException: Cannot execute reques
 	at org.springframework.boot.SpringApplicationShutdownHook.closeAndWait(SpringApplicationShutdownHook.java:147) ~[spring-boot-4.0.7.jar:4.0.7]
 	at java.base/java.lang.Iterable.forEach(Iterable.java:75) ~[na:na]
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:116) ~[spring-boot-4.0.7.jar:4.0.7]
-	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
 
-2026-06-24T19:29:55.884+05:30  INFO 164137 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2026-07-04T11:30:04.405+05:30  INFO 8476 --- [SOCIAL-SERVICE] [ionShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:41 min
+[INFO] Finished at: 2026-07-04T11:30:04+05:30
+[INFO] ------------------------------------------------------------------------
